@@ -1,30 +1,72 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import homeIndex from './views/home/index.vue'
+import homeMain from './views/home/main.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      redirect: '/home',
+      component: homeIndex,
+      children: [
+        {
+          path: 'home',
+          name: 'home',
+          component: homeMain,
+        },
+        {
+          path: 'trending',
+          name: 'trending',
+          component: () => import('@/views/home/trending.vue')
+        },
+        {
+          path: 'post',
+          name: 'post',
+          component: () => import('@/views/home/post.vue')
+        },
+        {
+          path: 'tag',
+          name: 'tag',
+          component: () => import('@/views/home/tag.vue')
+        },
+      ]
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    }, 
+      path: '/sign',
+      name: 'sign',
+      component: () => import('@/views/sign.vue')
+    },
     {
       path: '*',
       name: 'e404',
-      component: () => import('./views/E404.vue')
+      component: () => import('./views/e404.vue')
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  Vue.prototype.$Progress.start()
+  next()
+  // if (store.state.firebaseLoaded) {
+  //   next()
+  // } else next()
+  // waitFirebase()
+  //   .then(() => next())
+  //   .catch(e => Vue.prototype.$toasted.global.error(e.message))
+})
+
+router.afterEach((to, from) => {
+  Vue.prototype.$Progress.finish()
+})
+
+router.onError(e => {
+  Vue.prototype.$Progress.finish()
+  // Vue.prototype.$toasted.global.error(e.message)
+})
+
+export default router

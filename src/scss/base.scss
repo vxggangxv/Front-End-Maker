@@ -1,6 +1,7 @@
 @charset "utf-8";
 
-@import './parts/reset.scss';
+@import './parts/reset';
+@import './parts/mixins';
 
 // --------------------
 // // mobile & tablet
@@ -46,85 +47,85 @@
 // }
 
 input {
-    font-family: $font-stack;
+  font-family: $font-stack;
 }
 
 input[type=password] {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 
 label {
-    @include va;
-    line-height: 1;
+  @include va;
+  line-height: 1;
 
-    >* {
-        @include va;
-    }
+  >* {
+    @include va;
+  }
 }
 
 legend,
 caption,
 .skip,
 .sr-only {
-    @include sr-only;
+  @include sr-only;
 }
 
 textarea {
-    border-color: #ddd;
-    border-radius: 0;
-    resize: none;
-    padding: 0;
-    margin: 0 auto;
-    color: $font-color;
-    font-family: $font-stack;
-    letter-spacing: normal;
+  border-color: #ddd;
+  border-radius: 0;
+  resize: none;
+  padding: 0;
+  margin: 0 auto;
+  color: $font-color;
+  font-family: $font-stack;
+  letter-spacing: normal;
 }
 
 
 img.bor {
-    border: 1px solid #bbb;
-    box-sizing: border-box;
+  border: 1px solid #bbb;
+  box-sizing: border-box;
 }
 
 .img-responsive {
-    display: block;
-    height: auto;
-    max-width: 100%;
+  display: block;
+  height: auto;
+  max-width: 100%;
 }
 
 .cf:after {
-    content: "";
-    display: table;
-    clear: both;
+  content: "";
+  display: table;
+  clear: both;
 }
 
 .group-f,
 .group {
-    @include center;
-    box-sizing: border-box;
+  @include center;
+  box-sizing: border-box;
 
-    &:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 }
 
 // mobile & tablet
 @media (max-width: 991px) {
-    .group {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
+  .group {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 }
 
 // pc md
 @media (min-width: 992px) and (max-width: 1019px) {
 
-    .group-f,
-    .group {
-        width: 940px;
-    }
+  .group-f,
+  .group {
+    width: 940px;
+  }
 
 
 }
@@ -132,202 +133,202 @@ img.bor {
 // pc lg
 @media (min-width: 1020px) {
 
-    .group-f,
-    .group {
-        width: 1020px;
-    }
+  .group-f,
+  .group {
+    width: 1020px;
+  }
 
-    .group {
-        padding-left: 40px;
-        padding-right: 40px;
-    }
+  .group {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }
 
 .btn {
-    @include btn-base;
-    color: #fff;
+  @include btn-base;
+  color: #fff;
 
-    &.btn-default {
-        @include btn-color(#fff);
-        color: #333;
+  &.btn-default {
+    @include btn-color(#fff);
+    color: #333;
+  }
+
+  &.btn-primary {
+    @include btn-color($primary-color);
+  }
+
+  &.btn-blue {
+    @include btn-color($btn-blue);
+  }
+
+  &.btn-green {
+    @include btn-color($btn-green);
+  }
+
+  &.btn-aqua {
+    @include btn-color($btn-aqua);
+  }
+
+  &.btn-orange {
+    @include btn-color($btn-orange);
+  }
+
+  &.btn-red {
+    @include btn-color($btn-red);
+  }
+
+  &.btn-gray {
+    @include btn-color($btn-gray);
+  }
+
+  &.no-bd {
+
+    &,
+    &:hover {
+      border-color: transparent;
     }
+  }
 
-    &.btn-primary {
-        @include btn-color($primary-color);
-    }
+  .btn-group-lg &,
+  &.lg {
+    @include btn-size(10px 16px, 18px);
+  }
 
-    &.btn-blue {
-        @include btn-color($btn-blue);
-    }
+  .btn-group-md &,
+  &.md {
+    @include btn-size(6px 12px, 14px);
+  }
 
-    &.btn-green {
-        @include btn-color($btn-green);
-    }
+  .btn-group-sm &,
+  &.sm {
+    @include btn-size(5px 10px, 12px);
+    line-height: 1.5;
+  }
 
-    &.btn-aqua {
-        @include btn-color($btn-aqua);
-    }
-
-    &.btn-orange {
-        @include btn-color($btn-orange);
-    }
-
-    &.btn-red {
-        @include btn-color($btn-red);
-    }
-
-    &.btn-gray {
-        @include btn-color($btn-gray);
-    }
-
-    &.no-bd {
-
-        &,
-        &:hover {
-            border-color: transparent;
-        }
-    }
-
-    .btn-group-lg &,
-    &.lg {
-        @include btn-size(10px 16px, 18px);
-    }
-
-    .btn-group-md &,
-    &.md {
-        @include btn-size(6px 12px, 14px);
-    }
-
-    .btn-group-sm &,
-    &.sm {
-        @include btn-size(5px 10px, 12px);
-        line-height: 1.5;
-    }
-
-    .btn-group-xs &,
-    &.xs {
-        @include btn-size(1px 15px, 12px);
-        line-height: 1.5;
-    }
+  .btn-group-xs &,
+  &.xs {
+    @include btn-size(1px 15px, 12px);
+    line-height: 1.5;
+  }
 
 }
 
 a.btn>* {
-    @include va;
+  @include va;
 }
 
 .pull-right {
-    float: right !important;
+  float: right !important;
 }
 
 .pull-left {
-    float: left !important;
+  float: left !important;
 }
 
 .hide {
-    display: none !important;
+  display: none !important;
 }
 
 .show {
-    display: block !important;
+  display: block !important;
 }
 
 .invisible {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .hidden {
-    display: none !important;
-    visibility: hidden !important;
+  display: none !important;
+  visibility: hidden !important;
 }
 
 .affix {
-    position: fixed !important;
+  position: fixed !important;
 }
 
 .split {
-    position: relative;
-    box-sizing: border-box;
+  position: relative;
+  box-sizing: border-box;
 }
 
 .fw-b {
-    font-weight: 700 !important;
+  font-weight: 700 !important;
 }
 
 .fw-n {
-    font-weight: 400 !important;
+  font-weight: 400 !important;
 }
 
 .tt-up {
-    text-transform: uppercase !important;
+  text-transform: uppercase !important;
 }
 
 .c-green {
-    color: $c-green !important;
+  color: $c-green !important;
 }
 
 .c-yellow {
-    color: $c-yellow !important;
+  color: $c-yellow !important;
 }
 
 .c-red {
-    color: $c-red !important;
+  color: $c-red !important;
 }
 
 .c-lightbrown {
-    color: $c-lightbrown !important;
+  color: $c-lightbrown !important;
 }
 
 .c-blue {
-    color: $c-blue !important;
+  color: $c-blue !important;
 }
 
 // animate css
 
 .animated {
-    animation-duration: 1s;
-    animation-fill-mode: both;
+  animation-duration: 1s;
+  animation-fill-mode: both;
 }
 
 .blind {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .fadeInUp {
-    visibility: visible;
+  visibility: visible;
 }
 
 @-webkit-keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateY(20px);
-        transform: translateY(20px);
-    }
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
+  }
 
-    100% {
-        opacity: 1;
-        -webkit-transform: translateY(0);
-        transform: translateY(0);
-    }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateY(20px);
-        -ms-transform: translateY(20px);
-        transform: translateY(20px);
-    }
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(20px);
+    -ms-transform: translateY(20px);
+    transform: translateY(20px);
+  }
 
-    100% {
-        opacity: 1;
-        -webkit-transform: translateY(0);
-        -ms-transform: translateY(0);
-        transform: translateY(0);
-    }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
 }
 
 .fadeInUp {
-    -webkit-animation-name: fadeInUp;
-    animation-name: fadeInUp;
+  -webkit-animation-name: fadeInUp;
+  animation-name: fadeInUp;
 }

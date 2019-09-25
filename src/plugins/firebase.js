@@ -1,21 +1,26 @@
 import Vue from 'vue'
-// import firebase from 'firebase/app'
-// import * as firebase from 'firebase/app'
-// import config from '../../firebaseConfig'
+import * as firebase from 'firebase/app'
+import firebaseConfig from '@/firebaseConfig'
+// import store from '../store'
 
 // import 'firebase/auth'
 // import 'firebase/firestore'
-// import 'firebase/firestore-storage'
+// import 'firebase/firebase-storage'
+// import 'firebase/database'
 
-// console.log('firebase plusgin loaded')
+console.log('firebase plusgin loaded')
 
-// if (!firebase.apps.length) firebase.initializeApp(config)
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig)
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig)
+// firebase.analytics();
 
-// Vue.prototype.$db = firebase.database()
-// Vue.prototype.$auth = firebase.auth()
+// // firebase.firestore().collection('test').add({ test: 'aaa' })
+// //   .then(r => console.log(r))
+// //   .catch(e => console.error(e))
 
-// const { TimeStamp, GeoPoint } = firebase.firestore
+Vue.prototype.$firebase = firebase
 
-// Vue.prototype.$firebase = firebase
-
-// console.log('firebase plusgin end')
+// firebase.auth().onAuthStateChanged((user) => {
+//   store.dispatch('getUser', user)
+// })
