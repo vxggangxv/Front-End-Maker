@@ -1,13 +1,18 @@
 <template>
   <v-app>
     <v-container fluid>
-      <v-row class="mt-10" no-gutters>
+      <v-row class="mt-5" no-gutters>
         <v-spacer></v-spacer>
-        <v-btn class="pa-0 ma-5 ml-4 mb-8" color="transparent" to="/" depressed rounded>
+        <v-btn class="pa-0 mr-5 ml-4 mt-3" color="transparent" to="/" depressed rounded>
           <v-icon class="app-logo-comm app-logo-icon mr-1">mdi-account-supervisor-circle</v-icon> 
           <span class="app-logo-comm app-logo">FEM</span>
         </v-btn>
         <v-spacer></v-spacer>
+      </v-row>
+      <v-row class="text-center">
+          <v-col>
+            <span class="font-weight-thin">Sign in to FEM</span>
+          </v-col>
       </v-row>
       <v-row>
         <v-card width="320" class="mx-auto">

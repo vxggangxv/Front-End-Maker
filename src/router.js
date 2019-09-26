@@ -9,13 +9,11 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
+  routes: [{
       path: '/',
       redirect: '/home',
       component: homeIndex,
-      children: [
-        {
+      children: [{
           path: 'home',
           name: 'home',
           component: homeMain,
@@ -36,9 +34,9 @@ const router = new Router({
           component: () => import('@/views/home/tag.vue')
         },
         {
-          path: 'userProfile',
-          name: 'userProfile',
-          component: () => import('@/views/home/userProfile.vue')
+          path: 'user',
+          name: 'user',
+          component: () => import('@/views/home/user.vue')
         },
       ]
     },
@@ -46,6 +44,11 @@ const router = new Router({
       path: '/sign',
       name: 'sign',
       component: () => import('@/views/sign.vue')
+    },
+    {
+      path: '/passwordReset',
+      name: 'passwordReset',
+      component: () => import('@/views/passwordReset.vue')
     },
     {
       path: '*',

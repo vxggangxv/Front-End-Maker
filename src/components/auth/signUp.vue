@@ -33,8 +33,8 @@
       <div class="small-terms-text">이 페이지는 reCAPTCHA로 보호되며, Google <a href="https://www.google.com/policies/privacy/" target="_blank">개인정보처리방침</a> 및 <a href="https://www.google.com/policies/terms/" target="_blank">서비스 약관</a>의 적용을 받습니다.</div>
     </v-card-text>
 
-    <v-card-actions>
-      <v-checkbox label="약관에 동의함" v-model="agree" :rules="[rule.agree]" required></v-checkbox>
+    <v-card-actions class="my-n4">
+      <v-checkbox label="약관에 동의함" v-model="agree" :rules="[rule.agree]" required dense></v-checkbox>
       <v-spacer></v-spacer>
       <v-btn color="primary" :disabled="!valid" @click="createWithEmailAndPassword">
         회원가입

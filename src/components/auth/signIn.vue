@@ -31,6 +31,7 @@
     </v-card-text>
 
     <v-card-actions>
+      <!-- <router-link to="/passwordReset" class="font-weight-light">비밀번호를 잊어버렸나요?</router-link> -->
       <v-spacer></v-spacer>
       <v-btn color="primary" :disabled="!valid" @click="signInWithEmailAndPassword">
         로그인
