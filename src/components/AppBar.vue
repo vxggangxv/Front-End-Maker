@@ -2,9 +2,10 @@
   <div>
     <v-app-bar color="transparent" flat app>
     <!-- <v-app-bar class="app-bar" color="white" :clipped-left="$vuetify.breakpoint.lgAndUp" app> -->
-      <v-toolbar-title>
-        <v-app-bar-nav-icon class="hidden-lg-and-up" @click="$store.state.drawer = !$store.state.drawer" ></v-app-bar-nav-icon>
-        <span class="hidden-md-and-down">FEM Article</span>
+      <v-toolbar-title class="ml-0">
+        <!-- <v-app-bar-nav-icon class="hidden-lg-and-up" @click="$store.state.drawer = !$store.state.drawer" ></v-app-bar-nav-icon> -->
+        <v-app-bar-nav-icon @click="$store.state.drawer = !$store.state.drawer" ></v-app-bar-nav-icon>
+        <!-- <span class="hidden-md-and-down toolbar-title-text"></span> -->
       </v-toolbar-title>
  
       <div class="flex-grow-1"></div>
@@ -13,32 +14,42 @@
         <v-icon>mdi-heart</v-icon>
       </v-btn> -->
 
-      <!-- <v-avatar color="white" size="36">
-        <img src="@/assets/logo.png" alt="프로필사진">
-      </v-avatar> -->
-
-      <div class="mx-2">
-        <v-btn to="/sign">회원가입</v-btn>
+      <!-- <div class="mx-2">
+        <v-btn @click="signOut">로그아웃</v-btn>
       </div>
       <div class="mx-2">
-        <v-btn to="/sign">로그인</v-btn>
+        <v-btn @click="goSignIn">로그인</v-btn>
       </div>
+      <div class="mx-2">
+        <v-btn @click="goSignUp">회원가입</v-btn>
+      </div> -->
 
       <v-menu left offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
+          <v-btn v-if="!$store.state.user" @click="goSignIn" color="white" depressed>로그인</v-btn>
+          <v-btn v-else icon v-on="on">
             <v-avatar color="white" size="36">
-              <v-img src="@/assets/logo.png" alt="프로필사진"></v-img>
+              <img v-if="$store.state.user.photoURL" :src="$store.state.user.photoURL" alt="avatar">
+              <v-icon v-else>mdi-account</v-icon>
             </v-avatar>
           </v-btn>
         </template>
 
-        <v-list flat class="pa-0">
-          <v-list-item to="/signUp" class="body-2" color="primary">
-            회원가입
+        <v-list class="pa-0 body-2" dense flat>
+          <v-list-item>
+            내 포스트
           </v-list-item>
-          <v-list-item to="/signIn" class="body-2">
-            로그인
+          <v-divider></v-divider>
+          <v-list-item>
+            새 글 작성
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item to="/userProfile">
+            프로필 수정
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item @click="signOut">
+            로그아웃
           </v-list-item>
         </v-list>
       </v-menu>
@@ -50,11 +61,11 @@
           </v-btn>
         </template>
 
-        <v-list>
+        <!-- <v-list>
           <v-list-item v-for="n in 5" :key="n" @click="() => {}">
             <v-list-item-title>Option {{ n }}</v-list-item-title>
           </v-list-item>
-        </v-list>
+        </v-list> -->
       </v-menu>
     </v-app-bar>
   </div>
@@ -62,7 +73,19 @@
 
 <script>
   export default {
-
+    methods: {
+      goSignIn() {
+        this.$store.commit('setSignType', true)
+        this.$router.push('/sign')
+      },
+      goSignUp() {
+        this.$store.commit('setSignType', false)
+        this.$router.push('/sign')
+      },
+      signOut () {
+        this.$firebase.auth().signOut()
+      }
+    },
   }
 
 </script>
@@ -70,5 +93,9 @@
 <style lang="scss" scoped>
 .app-bar {
   border-bottom: 1px solid #ddd;
+}
+.toolbar-title-text {
+  position: relative; 
+  top: 2px;
 }
 </style>

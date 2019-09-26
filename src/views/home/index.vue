@@ -1,5 +1,7 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
+
+    <vue-progress-bar></vue-progress-bar>
 
     <app-nav></app-nav>
     <app-bar></app-bar>
@@ -20,26 +22,31 @@
 </template>
 
 <script>
-import AppBar from '@/components/AppBar';
-import AppNav from '@/components/AppNav';
-import AppFooter from '@/components/AppFooter';
+  import AppBar from '@/components/AppBar';
+  import AppNav from '@/components/AppNav';
+  import AppFooter from '@/components/AppFooter';
 
   export default {
-      components: {
-          AppBar,
-          AppNav,
-          AppFooter,
-      },
-
+    components: {
+      AppBar,
+      AppNav,
+      AppFooter,
+    },
   }
+
 </script>
 
 <style lang="scss">
-.theme--light.v-application {
-  background: #F1F3F5 !important;
-}
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  .theme--light.v-application {
+    background: #F1F3F5 !important;
+    // color: #222 !important;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .v-text-field input {
+    line-height: normal !important;
+  }
 </style>

@@ -3,24 +3,17 @@
     <v-container fluid>
       <v-row class="mt-10" no-gutters>
         <v-spacer></v-spacer>
-        <v-chip class="py-5 ma-5" color="transparent" to="/" flat depressed>
+        <v-btn class="pa-0 ma-5 ml-4 mb-8" color="transparent" to="/" depressed rounded>
           <v-icon class="app-logo-comm app-logo-icon mr-1">mdi-account-supervisor-circle</v-icon> 
           <span class="app-logo-comm app-logo">FEM</span>
-        </v-chip>
+        </v-btn>
         <v-spacer></v-spacer>
       </v-row>
-      <!-- <v-row class="mb-5">
-        <v-spacer></v-spacer>
-        <div class="subheading font-weight-light">Sign into FEM</div>
-        <v-spacer></v-spacer>
-      </v-row> -->
       <v-row>
-        <v-card width="320" class="mx-auto" flat>
+        <v-card width="320" class="mx-auto">
           <v-card-text>
-
-            <sign-in v-if="signType" @changeSignType="signType = !signType"></sign-in>
-            <sign-up v-else @changeSignType="signType = !signType"></sign-up>
-
+              <sign-in v-if="$store.state.signType"></sign-in>
+              <sign-up v-else></sign-up>
           </v-card-text>
         </v-card>
       </v-row>
@@ -31,16 +24,21 @@
 <script>
   import SignIn from '@/components/auth/SignIn.vue'
   import SignUp from '@/components/auth/SignUp.vue'
+  import FinishSignUp from '@/components/auth/FinishSignUp.vue'
 
   export default {
     components: {
       SignIn,
-      SignUp
+      SignUp,
+      FinishSignUp,
     },
     data() {
       return {
-        signType: true
+        
       }
+    },
+    mounted() {
+
     },
   }
 

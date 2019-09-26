@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from './store'
 import homeIndex from './views/home/index.vue'
 import homeMain from './views/home/main.vue'
 
@@ -34,6 +35,11 @@ const router = new Router({
           name: 'tag',
           component: () => import('@/views/home/tag.vue')
         },
+        {
+          path: 'userProfile',
+          name: 'userProfile',
+          component: () => import('@/views/home/userProfile.vue')
+        },
       ]
     },
     {
@@ -49,15 +55,26 @@ const router = new Router({
   ]
 })
 
+const waitFirebase = () => {
+  return new Promise((resolve, reject) => {
+    let cnt = 0
+    const tmr = setInterval(() => {
+      if (store.state.firebaseLoaded) {
+        clearInterval(tmr)
+        resolve()
+      } else if (cnt++ > 500) reject(Error('제한 시간 초과, 인터넷 연결을 확인하세요'))
+    }, 10)
+  })
+}
+
 router.beforeEach((to, from, next) => {
   Vue.prototype.$Progress.start()
-  next()
   // if (store.state.firebaseLoaded) {
   //   next()
   // } else next()
-  // waitFirebase()
-  //   .then(() => next())
-  //   .catch(e => Vue.prototype.$toasted.global.error(e.message))
+  waitFirebase()
+    .then(() => next())
+    .catch(e => Vue.prototype.$toasted.global.error(e.message))
 })
 
 router.afterEach((to, from) => {

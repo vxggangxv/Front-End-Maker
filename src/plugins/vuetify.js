@@ -19,6 +19,9 @@ export default new Vuetify({
         // secondary: colors.red.lighten4,
         // accent: colors.indigo.base, 
       },
+      dark: {
+        primary: '#11293E',
+      }
     },
   },
 });
