@@ -8,20 +8,19 @@ export default new Vuex.Store({
     drawer: null,
     signType: true,
     user: null,
-    emailVerified: null,
+    emailSend: false,
     firebaseLoaded: false,
   },
   mutations: {
-    setSignType (state, payload) {
+    setSignType(state, payload) {
       state.signType = payload
     },
-    setUser (state, payload) {
+    setUser(state, payload) {
       state.user = payload
     },
     setFirebaseLoaded(state) {
       state.firebaseLoaded = true
     },
   },
-  actions: {
-  }
+  actions: {}
 })

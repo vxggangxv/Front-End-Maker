@@ -27,13 +27,14 @@
         </v-col>
       </v-row>
 
+      <v-text-field label="닉네임" v-model="form.nickName" :rules="[rule.required, rule.minLength(3)]"></v-text-field>
       <v-text-field label="이메일" v-model="form.email" :rules="[rule.required, rule.minLength(7), rule.maxLength(50), rule.email]" required></v-text-field>
-      <!-- <v-text-field label="닉네임" v-model="form.nickName" :rules="[rule.required, rule.minLength(3)]"></v-text-field>
-      <v-text-field label="비밀번호" v-model="form.password" :rules="[rule.required, rule.minLength(6), rule.maxLength(50)]" type="password" @keydown.enter="createWithEmailAndPassword" required></v-text-field> -->
+      <v-text-field label="비밀번호" v-model="form.password" :rules="[rule.required, rule.minLength(6), rule.maxLength(50)]" type="password" @keydown.enter="createWithEmailAndPassword" required></v-text-field>
       <div class="small-terms-text">이 페이지는 reCAPTCHA로 보호되며, Google <a href="https://www.google.com/policies/privacy/" target="_blank">개인정보처리방침</a> 및 <a href="https://www.google.com/policies/terms/" target="_blank">서비스 약관</a>의 적용을 받습니다.</div>
     </v-card-text>
 
     <v-card-actions class="my-n4">
+      <v-checkbox label="약관에 동의함" v-model="agree" :rules="[rule.agree]" required dense></v-checkbox>
       <v-spacer></v-spacer>
       <v-btn color="primary" :disabled="!valid" @click="createWithEmailAndPassword">
         회원가입
@@ -64,22 +65,17 @@
     },
     methods: {
       async createWithEmailAndPassword() {
-        var actionCodeSettings = {
-          // URL you want to redirect back to. The domain (www.example.com) for this
-          // URL must be whitelisted in the Firebase Console.
-          url: window.location.href,
-          // This must be true.
-          handleCodeInApp: true,
-        };
-        const email = this.form.email
-        try {
-          await this.$firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
-          await window.localStorage.setItem('emailForSignIn', email);
-          this.$store.commit('setSignType', true)
-          console.log('linkToEmail success');
-        } catch (error) {
-          console.log(error.message);
-        }
+        if (!this.$refs.form.validate()) return this.$toasted.global.error('입력 폼을 올바르게 작성해주세요.')
+        await this.$firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password)
+        this.$toasted.global.notice('가입이 완료되었습니다. 인증을 위해 이메일을 확인해주세요')
+        const user = this.$firebase.auth().currentUser
+        await user.updateProfile({
+          displayName: this.form.nickName
+        })
+        this.$firebase.auth().languageCode = 'ko'
+        await user.sendEmailVerification()
+        await this.$firebase.auth().signOut()
+        this.$store.state.signType = true
       },
     },
   }
