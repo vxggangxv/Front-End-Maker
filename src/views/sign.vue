@@ -28,9 +28,9 @@
 
             <!-- <sign-in v-if="$store.state.signType"></sign-in>
             <sign-up v-else></sign-up>-->
-            <v-row no-gutters class="px-2 py-3">
+            <!-- <v-row no-gutters class="px-2 py-3">
               <v-btn @click="signOut" block>로그아웃</v-btn>
-            </v-row>
+            </v-row>-->
           </v-card-text>
         </v-card>
       </v-row>

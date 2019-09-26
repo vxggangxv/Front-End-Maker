@@ -24,7 +24,7 @@
       ></v-text-field>
     </v-row>
     <v-row no-gutters class="mt-2">
-      <v-btn color="primary" :disabled="!valid" @click="signInWithEmailAndPassword" block>시작하기</v-btn>
+      <v-btn color="primary" :disabled="!valid" @click="signInWithEmailAndPassword" block>로그인 링크 보내기</v-btn>
     </v-row>
     <div class="small-terms-text mt-2">
       이 페이지는 reCAPTCHA로 보호되며, Google
