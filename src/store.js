@@ -6,15 +6,13 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     drawer: null,
-    signType: true,
-    user: null,
     emailSend: false,
+    emailVerified: false,
+    user: null,
     firebaseLoaded: false,
+    // signType: true,
   },
   mutations: {
-    setSignType(state, payload) {
-      state.signType = payload
-    },
     setUser(state, payload) {
       state.user = payload
     },

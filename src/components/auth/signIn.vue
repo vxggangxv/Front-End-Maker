@@ -24,7 +24,7 @@
       ></v-text-field>
     </v-row>
     <v-row no-gutters class="mt-2">
-      <v-btn color="primary" :disabled="!valid" @click="signInWithEmailAndPassword" block>로그인 링크 보내기</v-btn>
+      <v-btn color="primary" :disabled="!valid" @click="signInWithEmailLink" block>로그인 링크 보내기</v-btn>
     </v-row>
     <div class="small-terms-text mt-2">
       이 페이지는 reCAPTCHA로 보호되며, Google
@@ -62,18 +62,22 @@ export default {
     async signInWithGoogle() {
       const provider = new this.$firebase.auth.GoogleAuthProvider();
       this.$firebase.auth().languageCode = "ko";
-      await this.$firebase.auth().signInWithPopup(provider);
-      // const user = this.$firebase.auth().currentUser
-      this.$router.push("/");
+      try {
+        await this.$firebase.auth().signInWithPopup(provider);
+        // const user = this.$firebase.auth().currentUser
+        console.log('success');
+        this.$router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
     },
-    async signInWithEmailAndPassword() {
-      if (!this.$refs.form.validate())
-        return this.$toasted.global.error("입력 폼을 올바르게 작성해주세요.");
-      this.$store.state.emailSend = true;
+    async signInWithEmailLink() {
+      if (!this.$refs.form.validate()) return this.$toasted.global.error("입력 폼을 올바르게 작성해주세요.");
       var actionCodeSettings = {
         // URL you want to redirect back to. The domain (www.example.com) for this
         // URL must be whitelisted in the Firebase Console.
         // url: "https://front-end-maker.firebaseapp.com",
+        // url: 'http://localhost:8080/',
         url: window.location.href,
         // This must be true.
         handleCodeInApp: true
@@ -84,6 +88,8 @@ export default {
           .auth()
           .sendSignInLinkToEmail(email, actionCodeSettings);
         await window.localStorage.setItem("emailForSignIn", email);
+
+        this.$store.state.emailSend = true;
         this.$toasted.global.notice("인증을 위해 이메일을 확인해주세요");
         // console.log("linkToEmail success");
       } catch (error) {

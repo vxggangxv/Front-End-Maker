@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row class="mt-5" no-gutters>
         <v-spacer></v-spacer>
-        <v-btn class="pa-0 mr-5 ml-4 mt-3" color="transparent" to="/" depressed rounded>
+        <v-btn class="pa-0 mr-5 ml-n1 mt-3" color="transparent" to="/" depressed rounded>
           <v-icon class="app-logo-comm app-logo-icon mr-1">mdi-account-supervisor-circle</v-icon>
           <span class="app-logo-comm app-logo">FEM</span>
         </v-btn>
@@ -17,7 +17,7 @@
       <v-row>
         <v-card width="320" class="mx-auto">
           <v-card-text>
-            <finish-sign v-if="$store.state.emailSend"></finish-sign>
+            <sign-Finish v-if="$store.state.emailSend"></sign-Finish>
             <sign-in v-else></sign-in>
             <!-- <template v-if="$store.state.user">
               <finish-sign v-if="$store.state.user.emailVerified"></finish-sign>
@@ -28,9 +28,10 @@
 
             <!-- <sign-in v-if="$store.state.signType"></sign-in>
             <sign-up v-else></sign-up>-->
-            <!-- <v-row no-gutters class="px-2 py-3">
+
+            <v-row no-gutters class="px-2 py-3">
               <v-btn @click="signOut" block>로그아웃</v-btn>
-            </v-row>-->
+            </v-row>
           </v-card-text>
         </v-card>
       </v-row>
@@ -41,13 +42,13 @@
 <script>
 import SignIn from "@/components/auth/SignIn.vue";
 import SignUp from "@/components/auth/SignUp.vue";
-import FinishSign from "@/components/auth/FinishSign.vue";
+import SignFinish from "@/components/auth/SignFinish.vue";
 
 export default {
   components: {
     SignIn,
     SignUp,
-    FinishSign
+    SignFinish
   },
   data() {
     return {};
@@ -55,7 +56,6 @@ export default {
   methods: {
     signOut() {
       this.$firebase.auth().signOut();
-      this.$store.state.emailSend = false;
     }
   },
   async mounted() {
@@ -84,7 +84,11 @@ export default {
         // You can check if the user is new or existing:
         // result.additionalUserInfo.isNewUser
         console.log("success");
-        this.$router.push("/");
+        this.$store.state.emailSend = true
+        this.$store.state.emailVerified = true
+        console.log(this.$store.state.emailSend);
+        console.log(this.$store.state.emailVerified);
+        // this.$router.push("/");
       } catch (error) {
         console.log(error.message);
         // Some error occurred, you can inspect the code: error.code

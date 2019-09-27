@@ -75,11 +75,7 @@
   export default {
     methods: {
       goSignIn() {
-        this.$store.commit('setSignType', true)
-        this.$router.push('/sign')
-      },
-      goSignUp() {
-        this.$store.commit('setSignType', false)
+        this.$store.state.emailVerified = false
         this.$router.push('/sign')
       },
       signOut () {

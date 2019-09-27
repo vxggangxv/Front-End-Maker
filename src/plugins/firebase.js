@@ -21,6 +21,10 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig)
 Vue.prototype.$firebase = firebase
 
 firebase.auth().onAuthStateChanged((user) => {
+  if (!user) {
+    store.state.emailSend = false
+    store.state.emailVerified = false
+  }
   store.commit('setUser', user)
   store.commit('setFirebaseLoaded')
   console.log(user);
