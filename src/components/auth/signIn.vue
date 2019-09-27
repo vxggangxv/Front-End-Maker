@@ -19,7 +19,7 @@
       <v-text-field
         label="이메일"
         v-model="form.email"
-        :rules="[rule.required, rule.maxLength(50), rule.email]"
+        :rules="[rules.required, rules.maxLength(50), rules.email]"
         required
       ></v-text-field>
     </v-row>
@@ -46,7 +46,7 @@ export default {
         email: "",
         password: ""
       },
-      rule: {
+      rules: {
         required: v => !!v || "필수 항목입니다.",
         minLength: length => v =>
           v.length >= length || `${length}자리 이상으로 입력하세요.`,
@@ -65,14 +65,15 @@ export default {
       try {
         await this.$firebase.auth().signInWithPopup(provider);
         // const user = this.$firebase.auth().currentUser
-        console.log('success');
+        console.log("success");
         this.$router.push("/");
       } catch (error) {
         console.log(error);
       }
     },
     async signInWithEmailLink() {
-      if (!this.$refs.form.validate()) return this.$toasted.global.error("입력 폼을 올바르게 작성해주세요.");
+      if (!this.$refs.form.validate())
+        return this.$toasted.global.error("입력 폼을 올바르게 작성해주세요.");
       var actionCodeSettings = {
         // URL you want to redirect back to. The domain (www.example.com) for this
         // URL must be whitelisted in the Firebase Console.

@@ -51,6 +51,21 @@ const router = new Router({
       component: () => import('@/views/passwordReset.vue')
     },
     {
+      path: '/lectures',
+      component: () => import('@/views/lectures/index.vue'),
+      children: [{
+          path: 'notes',
+          name: 'notes',
+          component: () => import('@/views/lectures/notes.vue')
+        },
+        {
+          path: 'storage',
+          name: 'storage',
+          component: () => import('@/views/lectures/storage.vue')
+        },
+      ]
+    },
+    {
       path: '*',
       name: 'e404',
       component: () => import('./views/e404.vue')

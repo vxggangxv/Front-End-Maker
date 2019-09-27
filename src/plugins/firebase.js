@@ -5,7 +5,7 @@ import store from '@/store'
 
 import 'firebase/auth'
 import 'firebase/firestore'
-// import 'firebase/firebase-storage'
+import 'firebase/firebase-storage'
 // import 'firebase/database'
 
 // Initialize Firebase
@@ -27,5 +27,5 @@ firebase.auth().onAuthStateChanged((user) => {
   }
   store.commit('setUser', user)
   store.commit('setFirebaseLoaded')
-  console.log(user);
+  // console.log(user);
 })
