@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from './store'
-import homeIndex from './views/home/index.vue'
-import homeMain from './views/home/main.vue'
+import Home from './views/home.vue'
 
 Vue.use(Router)
 
@@ -11,34 +10,25 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [{
       path: '/',
-      redirect: '/home',
-      component: homeIndex,
-      children: [{
-          path: 'home',
-          name: 'home',
-          component: homeMain,
-        },
-        {
-          path: 'trending',
-          name: 'trending',
-          component: () => import('@/views/home/trending.vue')
-        },
-        {
-          path: 'post',
-          name: 'post',
-          component: () => import('@/views/home/post.vue')
-        },
-        {
-          path: 'tag',
-          name: 'tag',
-          component: () => import('@/views/home/tag.vue')
-        },
-        {
-          path: 'user',
-          name: 'user',
-          component: () => import('@/views/home/user.vue')
-        },
-      ]
+      name: 'home',
+      component: Home,
+    },
+    {
+      path: '/trending',
+      name: 'trending',
+      component: () => import('@/views/trending.vue')
+    }, {
+      path: '/post',
+      name: 'post',
+      component: () => import('@/views/post.vue')
+    }, {
+      path: '/tag',
+      name: 'tag',
+      component: () => import('@/views/tag.vue')
+    }, {
+      path: '/user',
+      name: 'user',
+      component: () => import('@/views/user.vue')
     },
     {
       path: '/sign',

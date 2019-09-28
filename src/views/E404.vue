@@ -1,5 +1,5 @@
 <template>
-  <div class="error-container">
+  <div class="error-container bg-mask">
     <div class="inform">
       <div class="error-code">404</div>
       <div class="content">Page Not Found</div>
@@ -14,7 +14,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .error-container {
+  .bg-mask {
     position: fixed;
     top: 0;
     left: 0;
