@@ -1,23 +1,27 @@
 <template>
   <!-- <v-navigation-drawer class="whtie" v-model="$store.state.drawer" :clipped="$vuetify.breakpoint.lgAndUp" app> -->
   <v-navigation-drawer class="whtie" width="240" v-model="$store.state.drawer" app>
-
     <v-container class="px-5">
       <v-row>
         <v-col cols="12">
           <div class="text-center title-container">
             <p class="display-1 font-weight-black">
-              프만사
+              <!-- 프만사 -->
+              <router-link to="/" class="black--text">프만사</router-link>
             </p>
-            <p class="subheading">
-              프론트 앤드를 만드는 사람들
-            </p>
+            <p class="subheading">프론트 앤드를 만드는 사람들</p>
           </div>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-text-field color="gray" label="Solo" append-icon="mdi-magnify" placeholder="Search" solo ></v-text-field>
+          <v-text-field
+            color="gray"
+            label="Solo"
+            append-icon="mdi-magnify"
+            placeholder="Search"
+            solo
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-list>
@@ -35,36 +39,36 @@
       <div class="pa-2">
         <v-btn block>Logout</v-btn>
       </div>
-    </template> -->
+      </template>-->
     </v-container>
   </v-navigation-drawer>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        items: [{
-            icon: 'mdi-trending-up',
-            title: '트렌딩',
-            path: '/trending'
-          },
-          {
-            icon: 'mdi-update',
-            title: '최신 포스트',
-            path: '/post'
-          },
-          {
-            icon: 'mdi-tag-multiple',
-            title: '태그',
-            path: '/tag'
-          },
-        ]
-      }
-    },
-    computed: {},
-  }
-
+export default {
+  data() {
+    return {
+      items: [
+        {
+          icon: "mdi-trending-up",
+          title: "트렌딩",
+          path: "/home/trending"
+        },
+        {
+          icon: "mdi-update",
+          title: "최신 포스트",
+          path: "/home/post"
+        },
+        {
+          icon: "mdi-tag-multiple",
+          title: "태그",
+          path: "/home/tag"
+        }
+      ]
+    };
+  },
+  computed: {}
+};
 </script>
 <style lang="scss" scoped>
 .title-container {

@@ -6,15 +6,15 @@
     </v-card-text>
     <v-card-text v-else class="px-12 text-center">
       이메일 인증이 완료되었습니다.
-      <v-btn color="primary mt-3" block>홈으로 이동</v-btn>
+      <v-btn color="primary mt-3" block to="/">홈으로 이동</v-btn>
     </v-card-text>
   </v-card>
 </template>
 <script>
 export default {
   data() {
-    return {};
+    return {}
   },
   methods: {}
-};
+}
 </script>

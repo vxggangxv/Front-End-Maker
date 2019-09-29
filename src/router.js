@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from './store'
-import Home from './views/home.vue'
+import homeIndex from './views/home/index.vue'
+import homeMain from './views/home/main.vue'
 
 Vue.use(Router)
 
@@ -10,35 +11,43 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [{
       path: '/',
-      name: 'home',
-      component: Home,
+      redirect: '/home/main',
     },
     {
-      path: '/trending',
-      name: 'trending',
-      component: () => import('@/views/trending.vue')
-    }, {
-      path: '/post',
-      name: 'post',
-      component: () => import('@/views/post.vue')
-    }, {
-      path: '/tag',
-      name: 'tag',
-      component: () => import('@/views/tag.vue')
-    }, {
-      path: '/user',
-      name: 'user',
-      component: () => import('@/views/user.vue')
+      path: '/home',
+      redirect: '/home/main',
+      component: homeIndex,
+      children: [{
+          path: 'main',
+          name: 'main',
+          component: homeMain,
+        },
+        {
+          path: 'trending',
+          name: 'trending',
+          component: () => import('@/views/home/trending.vue')
+        },
+        {
+          path: 'post',
+          name: 'post',
+          component: () => import('@/views/home/post.vue')
+        },
+        {
+          path: 'tag',
+          name: 'tag',
+          component: () => import('@/views/home/tag.vue')
+        },
+        {
+          path: 'user',
+          name: 'user',
+          component: () => import('@/views/home/user.vue')
+        },
+      ]
     },
     {
       path: '/sign',
       name: 'sign',
       component: () => import('@/views/sign.vue')
-    },
-    {
-      path: '/passwordReset',
-      name: 'passwordReset',
-      component: () => import('@/views/passwordReset.vue')
     },
     {
       path: '/lectures',
@@ -57,8 +66,8 @@ const router = new Router({
     },
     {
       path: '*',
-      name: 'e404',
-      component: () => import('./views/e404.vue')
+      name: 'E404',
+      component: () => import('./views/E404.vue')
     }
   ]
 })

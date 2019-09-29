@@ -44,7 +44,7 @@
             새 글 작성
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item to="/user">
+          <v-list-item to="/home/user">
             프로필 수정
           </v-list-item>
           <v-divider></v-divider>
