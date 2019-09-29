@@ -66,8 +66,8 @@ const router = new Router({
     },
     {
       path: '*',
-      name: 'E404',
-      component: () => import('./views/E404.vue')
+      name: 'e404',
+      component: () => import('./views/e404.vue')
     }
   ]
 })
