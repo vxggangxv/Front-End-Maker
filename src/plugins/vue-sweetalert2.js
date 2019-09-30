@@ -4,8 +4,8 @@ import VueSweetalert2 from 'vue-sweetalert2'
 // Vue.prototype.$swal = VueSweetalert2
 
 const options = {
-  confirmButtonColor: '#41b882',
-  cancelButtonColor: '#ff7674'
+  // confirmButtonColor: '#41b882',
+  // cancelButtonColor: '#ff7674'
 }
 
 Vue.use(VueSweetalert2, options)

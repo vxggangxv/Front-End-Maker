@@ -62,6 +62,11 @@ const router = new Router({
           name: 'storage',
           component: () => import('@/views/lectures/storage.vue')
         },
+        {
+          path: 'axios',
+          name: 'axios',
+          component: () => import('@/views/lectures/axios.vue')
+        },
       ]
     },
     {

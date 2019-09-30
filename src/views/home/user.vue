@@ -25,7 +25,7 @@
                   prepend-icon="mdi-camera"
                   label="Avatar"
                   v-model="file"
-                  @change="uploadAvatar"
+                  @change="updateAvatar"
                 ></v-file-input>
               </div>
             </v-col>
@@ -40,37 +40,23 @@
                     required
                   ></v-text-field>
                   <v-spacer></v-spacer>
-                  <v-btn :disabled="!valid" @click="changeNick" outlined small
-                    >변경</v-btn
-                  >
-                  <v-btn
-                    class="ml-1"
-                    @click="nickChangeType = false"
-                    outlined
-                    small
-                    >취소</v-btn
-                  >
+                  <v-btn :disabled="!valid" @click="updateNick" outlined small>변경</v-btn>
+                  <v-btn class="ml-1" @click="nickChangeType = false" outlined small>취소</v-btn>
                 </div>
                 <div v-else class="d-flex">
-                  <span class="font-weight-bold">
-                    {{ $store.state.user.displayName }}
-                  </span>
+                  <span class="font-weight-bold">{{ $store.state.user.displayName }}</span>
                   <v-spacer></v-spacer>
-                  <v-btn outlined small @click="nickChangeCancel"
-                    >닉네임 변경</v-btn
-                  >
+                  <v-btn outlined small @click="nickChangeCancel">닉네임 변경</v-btn>
                 </div>
                 <div class="mt-2">
-                  <span class="font-weight-thin">
-                    {{ $store.state.user.email }}
-                  </span>
+                  <span class="font-weight-thin">{{ $store.state.user.email }}</span>
                 </div>
               </template>
               <!-- <div class="mt-2">
                 <v-btn class="font-weight-thin" @click="blurEvt">
                   블러 테스트
                 </v-btn>
-              </div> -->
+              </div>-->
             </v-col>
           </v-row>
         </v-card>
@@ -87,10 +73,10 @@ export default {
       loading: false,
       nickChangeType: false,
       form: {
-        nickName: ''
+        nickName: ""
       },
       rules: {
-        required: v => !!v || '필수 항목입니다.',
+        required: v => !!v || "필수 항목입니다.",
         minLength: length => v =>
           v.length >= length || `${length}자리 이상으로 입력하세요.`,
         maxLength: length => v =>
@@ -98,38 +84,38 @@ export default {
         // value => !value || value.size < 2000000 || "2MB 이내로 등록 가능!"
       },
       valid: false
-    }
+    };
   },
   methods: {
     blurEvt() {},
     nickChangeCancel() {
-      this.form.nickName = ''
-      this.nickChangeType = true
+      this.form.nickName = "";
+      this.nickChangeType = true;
     },
-    async uploadAvatar() {
+    async updateAvatar() {
       // console.log(this.file);
-      if (!this.file || this.file === undefined) return (this.file = null)
+      if (!this.file || this.file === undefined) return (this.file = null);
       if (this.file.size > 2000000) {
         this.$toasted.global.error(
-          '아바타 이미지는 2MB 이내로 등록 가능합니다.'
-        )
-        return (this.file = null)
+          "아바타 이미지는 2MB 이내로 등록 가능합니다."
+        );
+        return (this.file = null);
       }
       const r = await this.$swal({
-        title: '정말 변경하시겠습니까?',
-        type: 'warning',
-        confirmButtonText: '확인',
-        cancelButtonText: '취소',
+        title: "변경하시겠습니까?",
+        type: "warning",
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
         showCancelButton: true
-      })
+      });
       if (!r.value) {
-        this.file = null
-        return
+        this.file = null;
+        return;
       }
 
-      const storageRef = this.$firebase.storage().ref()
+      const storageRef = this.$firebase.storage().ref();
       // this.loading = true;
-      const user = this.$firebase.auth().currentUser
+      const user = this.$firebase.auth().currentUser;
       // const uploadTask = storageRef.child(user.uid).put(this.files)
 
       // const config = {
@@ -144,72 +130,72 @@ export default {
       // };
 
       function getExtension(fileName) {
-        var fileLength = fileName.length
-        var lastDot = fileName.lastIndexOf('.')
-        var fileExtension = fileName.substring(lastDot + 1, fileLength)
-        return fileExtension
+        var fileLength = fileName.length;
+        var lastDot = fileName.lastIndexOf(".");
+        var fileExtension = fileName.substring(lastDot + 1, fileLength);
+        return fileExtension;
       }
-      const fileExtension = getExtension(this.file.name)
+      const fileExtension = getExtension(this.file.name);
       const uploadTask = storageRef
-        .child('images/users/' + user.uid + '/' + 'avatar.' + fileExtension)
-        .put(this.file)
+        .child("images/users/" + user.uid + "/" + "avatar." + fileExtension)
+        .put(this.file);
 
       uploadTask.on(
         this.$firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
         snapshot => {
           this.progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           switch (snapshot.state) {
             case this.$firebase.storage.TaskState.PAUSED: // or 'paused'
-              this.$toasted.global.error('Upload is paused')
-              break
+              this.$toasted.global.error("Upload is paused");
+              break;
             case this.$firebase.storage.TaskState.RUNNING: // or 'running'
               // this.$toasted.global.notice('Upload is running')
-              break
+              break;
           }
         },
         error => {
-          this.$toasted.global.error(error.code)
+          this.$toasted.global.error(error.code);
           // this.loading = false;
         },
         () => {
           uploadTask.snapshot.ref.getDownloadURL().then(async photoURL => {
             await user.updateProfile({
               photoURL
-            })
-            this.$store.commit('setUser', user)
+            });
+            this.$store.commit("setUser", user);
             // await this.$firebase
             //   .firestore()
             //   .collection("users")
             //   .doc(user.uid)
             //   .update({ updatedAt, photoURL });
             // this.loading = false;
-            this.file = null
+            this.file = null;
             // console.log("File available at", photoURL);
-          })
+          });
         }
-      )
+      );
     },
-    async changeNick() {
+    async updateNick() {
       if (!this.$refs.form.validate())
-        return this.$toasted.global.error('입력 폼을 올바르게 작성해주세요.')
+        return this.$toasted.global.error("입력 폼을 올바르게 작성해주세요.");
       const r = await this.$swal.fire({
-        title: '정말 변경하시겠습니까?',
-        type: 'warning',
-        confirmButtonText: '확인',
-        cancelButtonText: '취소',
+        title: "정말 변경하시겠습니까?",
+        type: "warning",
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
         showCancelButton: true
-      })
-      if (!r.value) return
-      const user = this.$firebase.auth().currentUser
-      const displayName = this.form.nickName
-      await user.updateProfile({ displayName })
-      this.$store.commit('setUser', user)
-      this.nickChangeType = false
-      this.form.nickName = null
+      });
+      if (!r.value) return;
+      const user = this.$firebase.auth().currentUser;
+      const displayName = this.form.nickName;
+      await user.updateProfile({ displayName });
+      this.$store.commit("setUser", user);
+      this.nickChangeType = false;
+      this.form.nickName = null;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped></style>
