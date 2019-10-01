@@ -27,5 +27,5 @@ firebase.auth().onAuthStateChanged((user) => {
   }
   store.commit('setUser', user)
   store.commit('setFirebaseLoaded')
-  // console.log(user);
+  console.log(user);
 })
