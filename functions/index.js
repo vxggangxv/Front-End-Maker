@@ -16,7 +16,7 @@ const db = admin.firestore()
 //  response.send("Hello from Firebase!");
 // });
 
-exports.test = functions.region('asia-east2').https.onRequest(require('./test'))
+// exports.test = functions.region('asia-east2').https.onRequest(require('./test'))
 exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (user) => {
   const {
     uid,
@@ -26,8 +26,14 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
     photoURL,
     disabled
   } = user
-  let level = 2
-  if ('toxnsldxn@gmail.com' === JSON.stringify(email) && emailVerified) level = 0
+
+  let emailName = email
+  // level0 = admin
+  level0Email = ['toxnsldxn@gmail.com']
+  let set = {
+    level: 2
+  }
+  if (level0Email.indexOf(emailName) != -1 && emailVerified) set.level = 0
 
   const d = {
     uid,
@@ -36,7 +42,7 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
     emailVerified,
     photoURL,
     disabled,
-    level,
+    level: set.level,
     createdAt: new Date(),
     updatedAt: new Date(),
     visitedAt: new Date(),
@@ -48,4 +54,3 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
 exports.deleteUser = functions.region('asia-east2').auth.user().onDelete((user) => {
   return db.collection('users').doc(user.uid).delete()
 })
-

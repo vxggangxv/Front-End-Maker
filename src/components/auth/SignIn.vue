@@ -20,6 +20,7 @@
         label="이메일"
         v-model="form.email"
         :rules="[rules.required, rules.maxLength(50), rules.email]"
+        @keydown.prevent.enter="signInWithEmailLink"
         required
       ></v-text-field>
     </v-row>
