@@ -3,16 +3,8 @@
     <v-container fluid>
       <v-row class="mt-5" no-gutters>
         <v-spacer></v-spacer>
-        <v-btn
-          class="pa-0 mr-5 ml-n1 mt-3"
-          color="transparent"
-          to="/"
-          depressed
-          rounded
-        >
-          <v-icon class="app-logo-comm app-logo-icon mr-1"
-            >mdi-account-supervisor-circle</v-icon
-          >
+        <v-btn class="pa-0 mr-5 ml-n1 mt-3" color="transparent" to="/" depressed rounded>
+          <v-icon class="app-logo-comm app-logo-icon mr-1">mdi-account-supervisor-circle</v-icon>
           <span class="app-logo-comm app-logo">FEM</span>
         </v-btn>
         <v-spacer></v-spacer>
@@ -23,7 +15,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-card width="320" class="mx-auto">
+        <v-card width="315" class="mx-auto">
           <v-card-text>
             <sign-Finish v-if="$store.state.emailSend"></sign-Finish>
             <sign-in v-else></sign-in>
@@ -48,9 +40,9 @@
 </template>
 
 <script>
-import SignIn from '@/components/auth/SignIn.vue'
-import SignUp from '@/components/auth/SignUp.vue'
-import SignFinish from '@/components/auth/SignFinish.vue'
+import SignIn from "@/components/auth/SignIn.vue";
+import SignUp from "@/components/auth/SignUp.vue";
+import SignFinish from "@/components/auth/SignFinish.vue";
 
 export default {
   components: {
@@ -59,11 +51,11 @@ export default {
     SignFinish
   },
   data() {
-    return {}
+    return {};
   },
   methods: {
     signOut() {
-      this.$firebase.auth().signOut()
+      this.$firebase.auth().signOut();
     }
   },
   async mounted() {
@@ -74,37 +66,37 @@ export default {
       // the sign-in operation.
       // Get the email if available. This should be available if the user completes
       // the flow on the same device where they started it.
-      var email = window.localStorage.getItem('emailForSignIn')
+      var email = window.localStorage.getItem("emailForSignIn");
       if (!email) {
         // User opened the link on a different device. To prevent session fixation
         // attacks, ask the user to provide the associated email again. For example:
-        email = window.prompt('Please provide your email for confirmation')
+        email = window.prompt("Please provide your email for confirmation");
       }
       try {
         await this.$firebase
           .auth()
-          .signInWithEmailLink(email, window.location.href)
+          .signInWithEmailLink(email, window.location.href);
         // Clear email from storage.
-        await window.localStorage.removeItem('emailForSignIn')
+        await window.localStorage.removeItem("emailForSignIn");
         // You can access the new user via result.user
         // Additional user info profile not available via:
         // result.additionalUserInfo.profile == null
         // You can check if the user is new or existing:
         // result.additionalUserInfo.isNewUser
-        console.log('success')
-        this.$store.state.emailSend = true
-        this.$store.state.emailVerified = true
-        console.log(this.$store.state.emailSend)
-        console.log(this.$store.state.emailVerified)
+        console.log("success");
+        this.$store.state.emailSend = true;
+        this.$store.state.emailVerified = true;
+        console.log(this.$store.state.emailSend);
+        console.log(this.$store.state.emailVerified);
         // this.$router.push("/");
       } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
         // Some error occurred, you can inspect the code: error.code
         // Common errors could be invalid email and invalid or expired OTPs.
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

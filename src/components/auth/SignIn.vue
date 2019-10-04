@@ -1,12 +1,20 @@
 <template>
   <v-form class="px-2" v-model="valid" ref="form" lazy-validation>
-    <div class="mt-3">
-      <v-btn color="red" dark block @click="signInWithGoogle">
-        <v-icon>mdi-google</v-icon>
-        <v-divider vertical class="mx-3"></v-divider>Google 계정으로 로그인
-      </v-btn>
-    </div>
     <v-row class="mt-3" no-gutters>
+      <v-text-field
+        label="이메일"
+        v-model="form.email"
+        dense="dense"
+        outlined
+        :rules="[rules.required, rules.maxLength(50), rules.email]"
+        @keydown.prevent.enter="signInWithEmailLink"
+        required
+      ></v-text-field>
+    </v-row>
+    <v-row no-gutters>
+      <v-btn color="primary" :disabled="!valid" @click="signInWithEmailLink" large block>이메일로 시작하기</v-btn>
+    </v-row>
+    <v-row class="mt-2" no-gutters>
       <v-col xs-5>
         <v-divider class="mt-3"></v-divider>
       </v-col>
@@ -15,19 +23,13 @@
         <v-divider class="mt-3"></v-divider>
       </v-col>
     </v-row>
-    <v-row no-gutters>
-      <v-text-field
-        label="이메일"
-        v-model="form.email"
-        :rules="[rules.required, rules.maxLength(50), rules.email]"
-        @keydown.prevent.enter="signInWithEmailLink"
-        required
-      ></v-text-field>
-    </v-row>
-    <v-row no-gutters class="mt-2">
-      <v-btn color="primary" :disabled="!valid" @click="signInWithEmailLink" block>로그인 링크 보내기</v-btn>
-    </v-row>
-    <div class="small-terms-text mt-2">
+    <div class="mt-2">
+      <v-btn color="red" dark large block @click="signInWithGoogle">
+        <v-icon>mdi-google</v-icon>
+        <v-divider vertical class="mx-3"></v-divider>Google 계정으로 시작하기
+      </v-btn>
+    </div>
+    <!-- <div class="small-terms-text mt-2">
       이 페이지는 reCAPTCHA로 보호되며, Google
       <a
         href="https://www.google.com/policies/privacy/"
@@ -35,6 +37,12 @@
       >개인정보처리방침</a> 및
       <a href="https://www.google.com/policies/terms/" target="_blank">서비스 약관</a>의
       적용을 받습니다.
+    </div>-->
+    <div class="small-terms-text mt-2">
+      이 페이지는 Google
+      <a href="https://www.google.com/policies/privacy/" target="_blank">개인정보처리방침</a> 및
+      <a href="https://www.google.com/policies/terms/" target="_blank">서비스 약관</a>의
+      적용을 받으며, 회원가입시 동의하신 것으로 간주합니다.
     </div>
   </v-form>
 </template>
@@ -67,6 +75,8 @@ export default {
         await this.$firebase.auth().signInWithPopup(provider);
         // const user = this.$firebase.auth().currentUser
         console.log("success");
+        const user = this.$firebase.auth().currentUser;
+        await user.updateProfile({ displayName: null });
         this.$router.push("/");
       } catch (error) {
         console.log(error);

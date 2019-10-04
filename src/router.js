@@ -50,6 +50,11 @@ const router = new Router({
       component: () => import('@/views/sign.vue')
     },
     {
+      path: '/board/write',
+      name: '/board/write',
+      component: () => import('@/views//board/write.vue')
+    },
+    {
       path: '/lectures',
       component: () => import('@/views/lectures/index.vue'),
       children: [{

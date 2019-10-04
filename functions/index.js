@@ -38,7 +38,7 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
   const d = {
     uid,
     email,
-    displayName,
+    displayName: null,
     emailVerified,
     photoURL,
     disabled,
