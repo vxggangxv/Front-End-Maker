@@ -8,16 +8,24 @@ export default new Vuex.Store({
     drawer: null,
     emailSend: false,
     emailVerified: false,
-    user: null,
     firebaseLoaded: false,
-    // signType: true,
+    user: null,
   },
   mutations: {
-    setUser(state, payload) {
-      state.user = payload
+    SET_DRAWER(state, toggle) {
+      state.drawer = toggle
     },
-    setFirebaseLoaded(state) {
-      state.firebaseLoaded = true
+    SET_EMAIL_SEND(state, toggle) {
+      state.emailSend = toggle
+    },
+    SET_EMAIL_VERIFIED(state, toggle) {
+      state.emailVerified = toggle
+    },
+    SET_FIREBASE_LOADED(state, toggle) {
+      state.firebaseLoaded = toggle
+    },
+    SET_USER(state, user) {
+      state.user = user
     },
   },
   actions: {}

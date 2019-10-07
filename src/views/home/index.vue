@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import AppBar from "@/components/AppBar";
-import AppNav from "@/components/AppNav";
-import AppFooter from "@/components/AppFooter";
+import AppBar from "../../components/AppBar.vue";
+import AppNav from "../../components/AppNav.vue";
+import AppFooter from "../../components/AppFooter.vue";
 
 export default {
   components: {

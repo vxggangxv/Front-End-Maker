@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   data() {
     return {
@@ -89,6 +91,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["SET_USER"]),
     blurEvt() {},
     nickChangeCancel() {
       this.form.nickName = "";
@@ -165,7 +168,7 @@ export default {
             await user.updateProfile({
               photoURL
             });
-            this.$store.commit("setUser", user);
+            this.SET_USER(user);
             // await this.$firebase
             //   .firestore()
             //   .collection("users")
@@ -192,7 +195,7 @@ export default {
       const user = this.$firebase.auth().currentUser;
       const displayName = this.form.nickName;
       await user.updateProfile({ displayName });
-      this.$store.commit("setUser", user);
+      this.SET_USER(user);
       this.nickChangeType = false;
       this.form.nickName = null;
     }

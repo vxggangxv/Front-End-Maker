@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   data() {
     return {
@@ -68,6 +70,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["SET_EMAIL_SEND"]),
     async signInWithGoogle() {
       const provider = new this.$firebase.auth.GoogleAuthProvider();
       this.$firebase.auth().languageCode = "ko";
@@ -101,7 +104,8 @@ export default {
           .sendSignInLinkToEmail(email, actionCodeSettings);
         await window.localStorage.setItem("emailForSignIn", email);
 
-        this.$store.state.emailSend = true;
+        this.SET_EMAIL_SEND(true);
+        // this.$store.state.emailSend = true;
         this.$toasted.global.notice("인증을 위해 이메일을 확인해주세요");
         // console.log("linkToEmail success");
       } catch (error) {

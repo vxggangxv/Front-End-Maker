@@ -70,7 +70,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.title-container {
-  // color: #fff;
-}
 </style>

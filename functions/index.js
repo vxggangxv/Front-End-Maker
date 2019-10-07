@@ -51,6 +51,26 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
   const r = await db.collection('users').doc(uid).set(d)
   return r
 })
+
 exports.deleteUser = functions.region('asia-east2').auth.user().onDelete((user) => {
   return db.collection('users').doc(user.uid).delete()
 })
+
+db.collection('infos').doc('users').get()
+  .then(s => {
+    if (!s.exists) db.collection('infos').doc('users').set({ counter: 0 })
+  })
+exports.incrementUserCount = functions.firestore
+  .document('users/{userId}')
+  .onCreate((snap, context) => {
+    return db.collection('infos').doc('users').update(
+      'counter', admin.firestore.FieldValue.increment(1)
+    )
+  })
+exports.decrementUserCount = functions.firestore
+  .document('users/{userID}')
+  .onDelete((snap, context) => {
+    return db.collection('infos').doc('users').update(
+      'counter', admin.firestore.FieldValue.increment(-1)
+    )
+  })

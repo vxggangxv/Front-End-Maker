@@ -18,7 +18,7 @@
       <v-spacer></v-spacer>
       <!-- <span class="text--color">{{ $refs.myQuillEditor }}</span> -->
 
-      <v-btn outlined dark @click="write">작성하기</v-btn>
+      <v-btn outlined dark @click="edit">수정하기</v-btn>
     </v-app-bar>
 
     <v-content>
@@ -44,6 +44,7 @@
 export default {
   data() {
     return {
+      id: null,
       uid: null,
       title: null,
       content: null,
@@ -72,16 +73,16 @@ export default {
     focusContent() {
       this.editor.focus();
     },
-    async write() {
+    async edit() {
       const r = await this.$firebase
         .firestore()
-        .collection("boards")
-        .add({
+        .collection("board")
+        .doc(this.id)
+        .set({
           title: this.title,
           content: this.content
         });
-
-      console.log(r);
+      this.$router.push("/board/list/" + this.id);
     }
   },
   computed: {
@@ -89,8 +90,17 @@ export default {
       return this.$refs.myQuillEditor.quill;
     }
   },
-  mounted() {
-    console.log("this is current quill instance object", this.editor);
+  async created() {
+    this.id = this.$route.params.id;
+    const snapshot = await this.$firebase
+      .firestore()
+      .collection("board")
+      .doc(this.id)
+      .get();
+    const { title, content } = snapshot.data();
+    this.title = title;
+    this.content = content;
+    console.log(snapshot);
   }
 };
 </script>

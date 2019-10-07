@@ -25,7 +25,7 @@ firebase.auth().onAuthStateChanged((user) => {
     store.state.emailSend = false
     store.state.emailVerified = false
   }
-  store.commit('setUser', user)
-  store.commit('setFirebaseLoaded')
+  store.commit('SET_USER', user)
+  store.commit('SET_FIREBASE_LOADED', true)
   console.log(user);
 })

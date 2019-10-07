@@ -41,19 +41,19 @@
 
 <script>
 import SignIn from "@/components/auth/SignIn.vue";
-import SignUp from "@/components/auth/SignUp.vue";
 import SignFinish from "@/components/auth/SignFinish.vue";
+import { mapMutations } from "vuex";
 
 export default {
   components: {
     SignIn,
-    SignUp,
     SignFinish
   },
   data() {
     return {};
   },
   methods: {
+    ...mapMutations(["SET_EMAIL_SEND", "SET_EMAIL_VERIFIED"]),
     signOut() {
       this.$firebase.auth().signOut();
     }
@@ -84,8 +84,10 @@ export default {
         // You can check if the user is new or existing:
         // result.additionalUserInfo.isNewUser
         console.log("success");
-        this.$store.state.emailSend = true;
-        this.$store.state.emailVerified = true;
+        this.SET_EMAIL_SEND(true);
+        this.SET_EMAIL_VERIFIED(true);
+        // this.$store.state.emailSend = true;
+        // this.$store.state.emailVerified = true;
         console.log(this.$store.state.emailSend);
         console.log(this.$store.state.emailVerified);
         // this.$router.push("/");
