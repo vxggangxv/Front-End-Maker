@@ -10,6 +10,8 @@ export default new Vuex.Store({
     emailVerified: false,
     firebaseLoaded: false,
     user: null,
+    boards: [],
+    board: {},
   },
   mutations: {
     SET_DRAWER(state, toggle) {
