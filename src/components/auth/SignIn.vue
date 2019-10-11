@@ -40,9 +40,9 @@
     </div>-->
     <div class="small-terms-text mt-2">
       이 페이지는 Google
-      <a href="https://www.google.com/policies/privacy/" target="_blank">개인정보처리방침</a> 및
-      <a href="https://www.google.com/policies/terms/" target="_blank">서비스 약관</a>의
-      적용을 받으며, 회원가입시 동의하신 것으로 간주합니다.
+      <a href="https://www.google.com/policies/privacy/" target="_blank">개인정보처리방침</a>
+      및
+      <a href="https://www.google.com/policies/terms/" target="_blank">서비스 약관</a>의 적용을 받으며, 회원가입시 동의하신 것으로 간주합니다.
     </div>
   </v-form>
 </template>
@@ -54,8 +54,7 @@ export default {
   data() {
     return {
       form: {
-        email: "",
-        password: ""
+        email: ""
       },
       rules: {
         required: v => !!v || "필수 항목입니다.",
@@ -71,49 +70,32 @@ export default {
   },
   methods: {
     ...mapMutations(["SET_EMAIL_SEND"]),
-    async signInWithGoogle() {
-      const provider = new this.$firebase.auth.GoogleAuthProvider();
-      this.$firebase.auth().languageCode = "ko";
-      try {
-        await this.$firebase.auth().signInWithPopup(provider);
-        // const user = this.$firebase.auth().currentUser
-        console.log("success");
-        const user = this.$firebase.auth().currentUser;
-        await user.updateProfile({ displayName: null });
-        this.$router.push("/");
-      } catch (error) {
-        console.log(error);
-      }
+    signInWithGoogle() {
+      this.$store
+        .dispatch("SIGN_IN_WITH_GOOGLE")
+        .then(() => {
+          this.$router.push("/");
+          console.log("success");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    async signInWithEmailLink() {
+    signInWithEmailLink() {
       if (!this.$refs.form.validate())
         return this.$toasted.global.error("입력 폼을 올바르게 작성해주세요.");
-      var actionCodeSettings = {
-        // URL you want to redirect back to. The domain (www.example.com) for this
-        // URL must be whitelisted in the Firebase Console.
-        // url: "https://front-end-maker.firebaseapp.com",
-        // url: 'http://localhost:8080/',
-        url: window.location.href,
-        // This must be true.
-        handleCodeInApp: true
-      };
-      try {
-        const email = this.form.email;
-        await this.$firebase
-          .auth()
-          .sendSignInLinkToEmail(email, actionCodeSettings);
-        await window.localStorage.setItem("emailForSignIn", email);
-
-        this.SET_EMAIL_SEND(true);
-        // this.$store.state.emailSend = true;
-        this.$toasted.global.notice("인증을 위해 이메일을 확인해주세요");
-        // console.log("linkToEmail success");
-      } catch (error) {
-        console.log(error.message);
-      }
+      this.$store
+        .dispatch("SIGN_IN_WITH_EMAIL_LINK", this.form.email)
+        .then(() => {
+          this.$store.commit("SET_EMAIL_SEND", true);
+          // this.$store.state.emailSend = true;
+          this.$toasted.global.notice("인증을 위해 이메일을 확인해주세요");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

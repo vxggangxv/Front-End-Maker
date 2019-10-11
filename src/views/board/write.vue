@@ -72,16 +72,16 @@ export default {
     focusContent() {
       this.editor.focus();
     },
-    async write() {
-      const r = await this.$firebase
-        .firestore()
-        .collection("boards")
-        .add({
-          title: this.title,
-          content: this.content
+    write() {
+      const { title, content } = this;
+      this.$store
+        .dispatch("CREATE_BOARD", { title, content })
+        .then(() => {
+          console.log("success");
+        })
+        .catch(error => {
+          console.log(error);
         });
-
-      console.log(r);
     }
   },
   computed: {
@@ -90,7 +90,7 @@ export default {
     }
   },
   mounted() {
-    console.log("this is current quill instance object", this.editor);
+    // console.log("this is current quill instance object", this.editor);
   }
 };
 </script>

@@ -3,8 +3,8 @@
     <v-menu left offset-y>
       <template v-slot:activator="{ on }">
         <v-btn v-if="!$store.state.user" @click="goSignIn" color="white" depressed>로그인</v-btn>
-        <v-btn v-else icon v-on="on">
-          <v-avatar color="white" size="36">
+        <v-btn v-else icon v-on="on" class="avatar-btn">
+          <v-avatar size="36">
             <img v-if="$store.state.user.photoURL" :src="$store.state.user.photoURL" alt="avatar" />
             <v-icon v-else>mdi-account</v-icon>
           </v-avatar>
@@ -28,6 +28,11 @@
 import { mapMutations } from "vuex";
 
 export default {
+  data() {
+    return {
+      path: ""
+    };
+  },
   methods: {
     ...mapMutations(["SET_EMAIL_VERIFIED", "SET_DRAWER"]),
     goSignIn() {
@@ -39,6 +44,10 @@ export default {
       this.$firebase.auth().signOut();
       this.$router.push("/sign");
     }
+  },
+  mounted() {
+    // console.log(this.$route.path);
+    this.path = this.$route.path;
   }
 };
 </script>

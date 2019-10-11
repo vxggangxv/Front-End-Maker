@@ -24,5 +24,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.avatar-btn {
+  background: #f5f5f5;
+}
 </style>

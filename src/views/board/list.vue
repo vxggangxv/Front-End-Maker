@@ -3,22 +3,22 @@
     <BoardBar />
 
     <v-content class="white mt-12">
-      <v-container fluid>
+      <v-container grid-list-sm>
         <v-row>
           <v-spacer></v-spacer>
-          <v-col cols="6">
+          <v-col xs="12" md="9" lg="7">
             <v-row>
-              <v-col cols="2">
+              <v-col cols="3">
                 <v-avatar size="150" color="grey lighten-4">
                   <img
                     v-if="$store.state.user.photoURL"
                     :src="$store.state.user.photoURL"
                     alt="avatar"
                   />
-                  <v-icon v-else size="150">mdi-account</v-icon>
+                  <v-icon v-else size="125">mdi-account</v-icon>
                 </v-avatar>
               </v-col>
-              <v-col class="pt-10 pl-5" cols="10">
+              <v-col class="pt-10" cols="9">
                 <div class="blue--text mt-3">{{ firstEmailName }}</div>
                 <!-- <v-divider class="mt-12"></v-divider> -->
                 <v-divider class="mt-3"></v-divider>
@@ -88,7 +88,7 @@ import BoardBar from "../../components/BoardBar.vue";
 export default {
   data() {
     return {
-      items: []
+      // items: []
     };
   },
   components: {
@@ -101,21 +101,14 @@ export default {
       var dot = email.lastIndexOf("@");
       var first = email.substring(0, dot);
       return "@" + first;
+    },
+    items() {
+      return this.$store.state.boards;
     }
   },
   methods: {
     async goEdit(id) {
       this.$router.push("/board/edit/" + id);
-      // const r = await this.$firebase
-      //   .firestore()
-      //   .collection("board")
-      //   .doc(id)
-      //   .set({
-      //     title: this.title,
-      //     content: this.content
-      //   });
-      // await this.get();
-      // console.log(r);
     },
     async del(id) {
       const r = await this.$firebase
@@ -125,25 +118,10 @@ export default {
         .delete();
       await this.get();
       console.log(r);
-    },
-    async get() {
-      const snapshot = await this.$firebase
-        .firestore()
-        .collection("board")
-        .get();
-      this.items = [];
-      snapshot.forEach(doc => {
-        const { title, content } = doc.data();
-        this.items.push({
-          title,
-          content,
-          id: doc.id
-        });
-      });
     }
   },
   async created() {
-    this.get();
+    this.$store.dispatch("FETCH_BOARDS");
   }
 };
 </script>

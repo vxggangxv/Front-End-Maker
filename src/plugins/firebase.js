@@ -1,15 +1,15 @@
-import Vue from 'vue'
-import * as firebase from 'firebase/app'
-import firebaseConfig from '@/../firebaseConfig'
-import store from '@/store'
+import Vue from 'vue';
+import * as firebase from 'firebase/app';
+import firebaseConfig from '@/../firebaseConfig';
+import store from '@/store';
 
-import 'firebase/auth'
-import 'firebase/firestore'
-import 'firebase/firebase-storage'
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/firebase-storage';
 // import 'firebase/database'
 
 // Initialize Firebase
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig)
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 // firebase.analytics();
 
 // console.log('firebase plusgin loaded')
@@ -18,14 +18,14 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig)
 // //   .then(r => console.log(r))
 // //   .catch(e => console.error(e))
 
-Vue.prototype.$firebase = firebase
+Vue.prototype.$firebase = firebase;
 
-firebase.auth().onAuthStateChanged((user) => {
-  if (!user) {
-    store.state.emailSend = false
-    store.state.emailVerified = false
-  }
-  store.commit('SET_USER', user)
-  store.commit('SET_FIREBASE_LOADED', true)
-  // console.log(user);
-})
+firebase.auth().onAuthStateChanged(user => {
+	if (!user) {
+		store.state.emailSend = false;
+		store.state.emailVerified = false;
+	}
+	store.commit('SET_USER', user);
+	store.commit('SET_FIREBASE_LOADED', true);
+	// console.log(user);
+});
