@@ -18,7 +18,7 @@
       <v-spacer></v-spacer>
       <!-- <span class="text--color">{{ $refs.myQuillEditor }}</span> -->
 
-      <v-btn outlined dark @click="edit">수정하기</v-btn>
+      <v-btn outlined dark @click="update">수정하기</v-btn>
     </v-app-bar>
 
     <v-content>
@@ -44,7 +44,7 @@
 export default {
   data() {
     return {
-      id: null,
+      bid: null,
       uid: null,
       title: null,
       content: null,
@@ -73,16 +73,10 @@ export default {
     focusContent() {
       this.editor.focus();
     },
-    async edit() {
-      const r = await this.$firebase
-        .firestore()
-        .collection("board")
-        .doc(this.id)
-        .set({
-          title: this.title,
-          content: this.content
-        });
-      this.$router.push("/board/list/" + this.id);
+    update() {
+      const { bid, title, content } = this;
+      this.$store.dispatch("UPDATE_BOARD", { bid, title, content });
+      this.$router.push(`/board/list/${this.bid}`);
     }
   },
   computed: {
@@ -91,16 +85,11 @@ export default {
     }
   },
   async created() {
-    this.id = this.$route.params.id;
-    const snapshot = await this.$firebase
-      .firestore()
-      .collection("board")
-      .doc(this.id)
-      .get();
-    const { title, content } = snapshot.data();
-    this.title = title;
-    this.content = content;
-    console.log(snapshot);
+    this.bid = this.$route.params.id;
+    await this.$store.dispatch("FETCH_BOARD", this.bid);
+
+    this.title = this.$store.state.board.title;
+    this.content = this.$store.state.board.content;
   }
 };
 </script>

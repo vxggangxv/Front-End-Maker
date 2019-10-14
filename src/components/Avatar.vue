@@ -4,7 +4,7 @@
       <template v-slot:activator="{ on }">
         <v-btn v-if="!$store.state.user" @click="goSignIn" color="white" depressed>로그인</v-btn>
         <v-btn v-else icon v-on="on" class="avatar-btn">
-          <v-avatar size="36">
+          <v-avatar size="36" color="white">
             <img v-if="$store.state.user.photoURL" :src="$store.state.user.photoURL" alt="avatar" />
             <v-icon v-else>mdi-account</v-icon>
           </v-avatar>

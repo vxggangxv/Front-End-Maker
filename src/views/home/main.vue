@@ -2,13 +2,11 @@
   <v-container fluid>
     <div class="title">최신 Article</div>
     <v-row>
-      <v-col v-for="n in 4" :key="n" cols="12" sm="6" md="4" lg="3">
+      <v-col v-for="item in items" :key="item.id" cols="12" sm="6" md="4" lg="3">
         <v-card>
-          <v-card-title>포스트 제목</v-card-title>
+          <v-card-title>{{ item.title }}</v-card-title>
           <v-divider></v-divider>
-          <v-card-text>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio accusamus, adipisci ullam, magnam, odit quisquam corrupti esse harum a est repudiandae at illo perferendis sequi? Commodi architecto quia deleniti! Nobis!
-          </v-card-text>
+          <v-card-text v-html="item.content"></v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -16,11 +14,18 @@
 </template>
 
 <script>
-  export default {
-    
+export default {
+  data() {
+    return {
+      items: []
+    };
+  },
+  async created() {
+    await this.$store.dispatch("FETCH_BOARDS");
+    this.items = this.$store.state.boards;
   }
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>

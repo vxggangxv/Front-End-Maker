@@ -46,4 +46,16 @@ $logo-color: #1ea1f7 !important;
 .ql-container.ql-snow {
   border: none !important;
 }
+.letter-space-n3 {
+  letter-spacing: -0.3px;
+}
+.letter-space-n5 {
+  letter-spacing: -0.5px;
+}
+.letter-space-n7 {
+  letter-spacing: -0.7px;
+}
+.letter-space-n10 {
+  letter-spacing: -1px;
+}
 </style>

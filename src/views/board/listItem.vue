@@ -5,39 +5,72 @@
     <v-content class="white mt-12">
       <v-container fluid>
         <v-row>
-          <v-spacer></v-spacer>
-          <v-col cols="6">
+          <v-spacer class="hidden-sm-and-down"></v-spacer>
+          <v-col cols="12" md="7" lg="6" xl="5">
             <v-row>
-              <v-col cols="1">
+              <v-col cols="2" sm="1">
                 <v-avatar size="62" color="grey lighten-4">
                   <img
                     v-if="$store.state.user.photoURL"
                     :src="$store.state.user.photoURL"
                     alt="avatar"
                   />
-                  <v-icon v-else size="62">mdi-account</v-icon>
+                  <v-icon v-else size="50">mdi-account</v-icon>
                 </v-avatar>
               </v-col>
-              <v-col class="mt-4 pl-2" cols="10">
+              <v-col
+                class="mt-4"
+                :class="$vuetify.breakpoint.xsOnly ? 'pl-2' : 'pl-8'"
+                cols="10"
+                sm="11"
+              >
                 <template v-if="$store.state.user.displayName">
-                  <div>{{ $store.state.user.displayName }}</div>
+                  <span>@{{ $store.state.user.displayName }}</span>
                 </template>
                 <template v-else>
-                  <div>{{ firstEmailName }}</div>
+                  <span>{{ firstEmailName }}</span>
                 </template>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
                 <v-card flat>
-                  <v-card-title class="pl-0 font-weight-bold display-1">{{ title }}</v-card-title>
+                  <v-card-title class="pl-0 pb-5 font-weight-bold display-1">{{ title }}</v-card-title>
                   <v-divider></v-divider>
-                  <v-card-text class="pl-0" v-html="content"></v-card-text>
+                  <v-card-text class="px-0">
+                    <div class="float-right">
+                      <router-link class="body-2 grey--text" to="/board/list">목록보기</router-link>
+                      <router-link class="ml-2 body-2 grey--text" :to="`/board/edit/${bid}`">수정</router-link>
+                      <a class="ml-2 body-2 grey--text" @click.prevent="del()">삭제</a>
+                    </div>
+                  </v-card-text>
+                  <v-card-text class="px-0 mt-10 mb-5" v-html="content"></v-card-text>
                 </v-card>
               </v-col>
             </v-row>
           </v-col>
-          <v-spacer></v-spacer>
+          <v-spacer class="hidden-sm-and-down"></v-spacer>
+        </v-row>
+        <v-row class="another-post-row py-5">
+          <v-spacer class="hidden-sm-and-down"></v-spacer>
+          <v-col cols="12" md="7" lg="6" xl="5">
+            <div class="my-post font-weight-bold">나의 다른 포스트</div>
+            <template v-if="items">
+              <v-card
+                outlined
+                :to="`/board/list/${item.id}`"
+                v-for="(item, i) in items"
+                :key="i"
+                class="mt-4"
+              >
+                <v-card-title>{{ item.title }}</v-card-title>
+                <v-divider class="mx-4"></v-divider>
+                <v-card-text class="mb-n3">날짜</v-card-text>
+                <v-card-actions></v-card-actions>
+              </v-card>
+            </template>
+          </v-col>
+          <v-spacer class="hidden-sm-and-down"></v-spacer>
         </v-row>
       </v-container>
     </v-content>
@@ -50,14 +83,15 @@ import BoardBar from "../../components/BoardBar.vue";
 export default {
   data() {
     return {
+      bid: null,
       title: null,
-      content: null
+      content: null,
+      items: []
     };
   },
   components: {
     BoardBar
   },
-  methods: {},
   computed: {
     firstEmailName() {
       var email = this.$store.state.user.email;
@@ -67,28 +101,32 @@ export default {
       return "@" + first;
     }
   },
+  methods: {
+    del() {
+      this.$store.dispatch("DELETE_BOARD", this.bid);
+      this.$router.push("/board/list");
+    }
+  },
   async created() {
-    const snapshot = await this.$firebase
-      .firestore()
-      .collection("board")
-      .doc(this.$route.params.id)
-      .get();
-    const { title, content } = snapshot.data();
-    this.title = title;
-    this.content = content;
-    console.log(snapshot);
+    this.bid = this.$route.params.id;
+    await this.$store.dispatch("FETCH_BOARD", this.bid);
+
+    this.title = this.$store.state.board.title;
+    this.content = this.$store.state.board.content;
+
+    await this.$store.dispatch("FETCH_BOARDS");
+    this.items = this.$store.state.boards;
   }
 };
 </script>
 <style lang="scss" scoped>
-.content-viewer {
-  height: calc(100% - 80px);
-}
 .my-post {
   display: inline-block;
   font-size: 22px;
-  border-bottom: 2px solid #2196f3;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
+}
+.another-post-row {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
 }
 </style>

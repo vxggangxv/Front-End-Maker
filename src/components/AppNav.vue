@@ -5,11 +5,11 @@
       <v-row>
         <v-col cols="12">
           <div class="text-center title-container">
-            <p class="display-1 font-weight-black">
+            <h1 class="display-1 font-weight-black">
               <!-- 프만사 -->
               <router-link to="/" class="black--text">프만사</router-link>
-            </p>
-            <p class="subheading">프론트 앤드를 만드는 사람들</p>
+            </h1>
+            <p class="subheading mt-4">프론트 앤드를 만드는 사람들</p>
           </div>
         </v-col>
       </v-row>

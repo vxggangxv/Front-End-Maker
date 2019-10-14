@@ -18,7 +18,7 @@
       <v-spacer></v-spacer>
       <!-- <span class="text--color">{{ $refs.myQuillEditor }}</span> -->
 
-      <v-btn outlined dark @click="write">작성하기</v-btn>
+      <v-btn outlined dark @click="create">작성하기</v-btn>
     </v-app-bar>
 
     <v-content>
@@ -41,19 +41,24 @@
 </template>
 
 <script>
+import { dateFormat } from "../../mixins/dateFormat";
+
 export default {
   data() {
     return {
       uid: null,
       title: null,
       content: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      visitedAt: new Date(),
       editorOption: {
         placeholder: "당신의 이야기를 적어보세요 ^-^"
       }
     };
+  },
+  mixins: [dateFormat],
+  computed: {
+    editor() {
+      return this.$refs.myQuillEditor.quill;
+    }
   },
   methods: {
     onEditorBlur(quill) {
@@ -72,25 +77,24 @@ export default {
     focusContent() {
       this.editor.focus();
     },
-    write() {
+    async create() {
+      const createdAt = this.getTodayType1();
+      const updatedAt = this.getTodayType1();
+      const visitedAt = this.getTodayType1();
+
       const { title, content } = this;
-      this.$store
-        .dispatch("CREATE_BOARD", { title, content })
-        .then(() => {
-          console.log("success");
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  },
-  computed: {
-    editor() {
-      return this.$refs.myQuillEditor.quill;
+      const docRef = await this.$store.dispatch("CREATE_BOARD", {
+        title,
+        content,
+        createdAt,
+        updatedAt,
+        visitedAt
+      });
+      this.$router.push(`/board/list/${docRef.id}`);
     }
   },
   mounted() {
-    // console.log("this is current quill instance object", this.editor);
+    // console.log(this.getToday());
   }
 };
 </script>

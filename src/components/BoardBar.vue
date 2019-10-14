@@ -4,7 +4,9 @@
       <v-btn icon @click="$router.go(-1)">
         <v-icon color="#222">mdi-arrow-left</v-icon>
       </v-btn>
-      <router-link to="/" class="black--text font-weight-bold display-1">프만사</router-link>
+      <h1 class="d-inline-block">
+        <router-link to="/" class="black--text font-weight-bold display-1">프만사</router-link>
+      </h1>
       <v-spacer></v-spacer>
       <!-- <span class="text--color">{{ $refs.myQuillEditor }}</span> -->
 
@@ -25,7 +27,7 @@ export default {
 </script>
 
 <style lang="scss">
-.avatar-btn {
-  background: #f5f5f5;
+.v-application .avatar-btn .v-avatar {
+  // background: #f5f5f5 !important;
 }
 </style>
