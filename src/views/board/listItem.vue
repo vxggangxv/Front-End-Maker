@@ -55,19 +55,15 @@
           <v-spacer class="hidden-sm-and-down"></v-spacer>
           <v-col cols="12" md="7" lg="6" xl="5">
             <div class="my-post font-weight-bold">나의 다른 포스트</div>
-            <template v-if="items">
-              <v-card
-                outlined
-                :to="`/board/list/${item.id}`"
-                v-for="(item, i) in items"
-                :key="i"
-                class="mt-4"
-              >
-                <v-card-title>{{ item.title }}</v-card-title>
-                <v-divider class="mx-4"></v-divider>
-                <v-card-text class="mb-n3">날짜</v-card-text>
-                <v-card-actions></v-card-actions>
-              </v-card>
+            <template v-if="boards">
+              <div v-for="(item, i) in boards" :key="i">
+                <v-card outlined class="mt-4" @click="anotherPost(item.id)">
+                  <v-card-title>{{ item.title }}</v-card-title>
+                  <v-divider class="mx-4"></v-divider>
+                  <v-card-text class="mb-n3">날짜</v-card-text>
+                  <v-card-actions></v-card-actions>
+                </v-card>
+              </div>
             </template>
           </v-col>
           <v-spacer class="hidden-sm-and-down"></v-spacer>
@@ -78,21 +74,29 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import BoardBar from "../../components/BoardBar.vue";
 
 export default {
   data() {
     return {
-      bid: null,
-      title: null,
-      content: null,
-      items: []
+      bid: null
+      // title: null,
+      // content: null,
+      // items: []
     };
   },
   components: {
     BoardBar
   },
   computed: {
+    ...mapState(["boards", "board"]),
+    title() {
+      return this.board.title;
+    },
+    content() {
+      return this.board.content;
+    },
     firstEmailName() {
       var email = this.$store.state.user.email;
       var emailLength = email.length;
@@ -102,20 +106,22 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["FETCH_BOARD", "DELETE_BOARD", "FETCH_BOARDS"]),
     del() {
-      this.$store.dispatch("DELETE_BOARD", this.bid);
+      this.DELETE_BOARD(this.bid);
       this.$router.push("/board/list");
+    },
+    anotherPost(id) {
+      this.FETCH_BOARD(id);
+      this.$router.push(`/board/list/${id}`);
     }
   },
-  async created() {
+  async mounted() {
     this.bid = this.$route.params.id;
-    await this.$store.dispatch("FETCH_BOARD", this.bid);
-
-    this.title = this.$store.state.board.title;
-    this.content = this.$store.state.board.content;
+    await this.FETCH_BOARD(this.bid);
 
     await this.$store.dispatch("FETCH_BOARDS");
-    this.items = this.$store.state.boards;
+    // await this.FETCH_BOARDS;
   }
 };
 </script>

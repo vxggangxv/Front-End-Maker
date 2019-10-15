@@ -20,6 +20,9 @@ img {
 .of-hidden {
   overflow: hidden;
 }
+.pos-relative {
+  position: relative;
+}
 $logo-color: #1ea1f7 !important;
 .app-logo-comm {
   font-size: 50px !important;

@@ -34,9 +34,9 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["SET_EMAIL_VERIFIED", "SET_DRAWER"]),
+    ...mapMutations(["SET_IS_EMAIL_VERIFIED", "SET_IS_DRAWER"]),
     goSignIn() {
-      this.SET_EMAIL_VERIFIED(false);
+      this.SET_IS_EMAIL_VERIFIED(false);
       // this.$store.state.emailVerified = false;
       this.$router.push("/sign");
     },

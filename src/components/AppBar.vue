@@ -4,7 +4,7 @@
       <!-- <v-app-bar class="app-bar" color="white" :clipped-left="$vuetify.breakpoint.lgAndUp" app> -->
       <v-toolbar-title class="ml-0">
         <!-- <v-app-bar-nav-icon class="hidden-lg-and-up" @click="$store.state.drawer = !$store.state.drawer" ></v-app-bar-nav-icon> -->
-        <v-app-bar-nav-icon @click="SET_DRAWER(!$store.state.drawer)"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon @click="SET_IS_DRAWER(!$store.state.drawer)"></v-app-bar-nav-icon>
         <!-- <span class="hidden-md-and-down toolbar-title-text"></span> -->
       </v-toolbar-title>
 

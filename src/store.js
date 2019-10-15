@@ -12,18 +12,20 @@ export default new Vuex.Store({
 		user: null,
 		boards: [],
 		board: {},
+		searchTitle: '',
+		searchList: [],
 	},
 	mutations: {
-		SET_DRAWER(state, toggle) {
+		SET_IS_DRAWER(state, toggle) {
 			state.drawer = toggle;
 		},
-		SET_EMAIL_SEND(state, toggle) {
+		SET_IS_EMAIL_SEND(state, toggle) {
 			state.emailSend = toggle;
 		},
-		SET_EMAIL_VERIFIED(state, toggle) {
+		SET_IS_EMAIL_VERIFIED(state, toggle) {
 			state.emailVerified = toggle;
 		},
-		SET_FIREBASE_LOADED(state, toggle) {
+		SET_IS_FIREBASE_LOADED(state, toggle) {
 			state.firebaseLoaded = toggle;
 		},
 		SET_USER(state, user) {
@@ -32,11 +34,14 @@ export default new Vuex.Store({
 		SET_BOARDS(state, boards) {
 			state.boards = boards;
 		},
-		DELETE_BOARD(state, id) {
-			state.boards = state.boards.filter(item => item.id !== id);
-		},
 		SET_BOARD(state, board) {
 			state.board = board;
+		},
+		SET_SEARCH_TITLE(state, searchTitle) {
+			state.searchTitle = searchTitle;
+		},
+		SET_SEARCH_LIST(state, searchList) {
+			state.searchList = searchList;
 		},
 	},
 	actions: {
@@ -45,7 +50,7 @@ export default new Vuex.Store({
 			Vue.prototype.$firebase.auth().languageCode = 'ko';
 			await Vue.prototype.$firebase.auth().signInWithPopup(provider);
 			const user = Vue.prototype.$firebase.auth().currentUser;
-			await user.updateProfile({ displayName: null });
+			user.updateProfile({ displayName: null });
 		},
 		async SIGN_IN_WITH_EMAIL_LINK(_, email) {
 			var actionCodeSettings = {
@@ -60,7 +65,7 @@ export default new Vuex.Store({
 			await Vue.prototype.$firebase
 				.auth()
 				.sendSignInLinkToEmail(email, actionCodeSettings);
-			await window.localStorage.setItem('emailForSignIn', email);
+			window.localStorage.setItem('emailForSignIn', email);
 		},
 		async CREATE_BOARD(_, { title, content, createdAt, updatedAt, visitedAt }) {
 			const docRef = await Vue.prototype.$firebase
@@ -82,17 +87,26 @@ export default new Vuex.Store({
 				.get();
 
 			// console.log(snapshot);
-			const items = [];
+
+			// const items = [];
+			// snapshot.forEach(doc => {
+			// 	const { title, content, createdAt, updatedAt, visitedAt } = doc.data();
+			// 	items.push({
+			// 		title,
+			// 		content,
+			// 		createdAt,
+			// 		updatedAt,
+			// 		visitedAt,
+			// 		id: doc.id,
+			// 	});
+			// });
+
+			let item = {};
+			let items = [];
 			snapshot.forEach(doc => {
-				const { title, content, createdAt, updatedAt, visitedAt } = doc.data();
-				items.push({
-					title,
-					content,
-					createdAt,
-					updatedAt,
-					visitedAt,
-					id: doc.id,
-				});
+				item = doc.data();
+				item.id = doc.id;
+				items.push(item);
 			});
 
 			commit('SET_BOARDS', items);
@@ -111,7 +125,7 @@ export default new Vuex.Store({
 
 			commit('SET_BOARD', item);
 		},
-		UPDATE_BOARD(_, { bid, title, content }) {
+		UPDATE_BOARD({ dispatch }, { bid, title, content }) {
 			Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
@@ -120,15 +134,39 @@ export default new Vuex.Store({
 					title,
 					content,
 				});
+
+			dispatch('FETCH_BOARD', bid);
 		},
-		DELETE_BOARD({ commit }, id) {
+		DELETE_BOARD({ dispatch }, id) {
 			Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.doc(id)
 				.delete();
 
-			commit('DELETE_BOARD', id);
+			dispatch('FETCH_BOARD', id);
+		},
+		async SEARCH_LIST({ commit }, title) {
+			// let titleList = [];
+			// titleList.push(title);
+			const querySnapshot = await Vue.prototype.$firebase
+				.firestore()
+				.collection('board')
+				// .where('title', '>=', title)
+				.where('title', '==', title)
+				// .where('title', 'array-contains', titleList)
+				// .where('title', '<=', 'title')
+				.get();
+			let item = {};
+			let items = [];
+			querySnapshot.forEach(doc => {
+				item = doc.data();
+				item.id = doc.id;
+				items.push(item);
+			});
+
+			commit('SET_SEARCH_TITLE', title);
+			commit('SET_SEARCH_LIST', items);
 		},
 	},
 });

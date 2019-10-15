@@ -15,13 +15,19 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <v-text-field
-            color="gray"
-            label="Solo"
-            append-icon="mdi-magnify"
-            placeholder="Search"
-            solo
-          ></v-text-field>
+          <div class="pos-relative">
+            <v-text-field
+              color="gray"
+              label="Solo"
+              placeholder="Search"
+              solo
+              v-model="searchTitle"
+              @keydown.enter="searchList"
+            ></v-text-field>
+            <span class="search-form-icon" @click="searchList">
+              <v-icon color="grey">mdi-magnify</v-icon>
+            </span>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -44,9 +50,12 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
+      searchTitle: "",
       items: [
         {
           icon: "mdi-trending-up",
@@ -66,8 +75,20 @@ export default {
       ]
     };
   },
-  computed: {}
+  methods: {
+    ...mapActions(["SEARCH_LIST"]),
+    searchList() {
+      const title = this.searchTitle;
+      this.SEARCH_LIST(this.searchTitle);
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
+.search-form-icon {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  cursor: pointer;
+}
 </style>

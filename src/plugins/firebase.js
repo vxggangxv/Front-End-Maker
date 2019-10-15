@@ -26,6 +26,6 @@ firebase.auth().onAuthStateChanged(user => {
 		store.state.emailVerified = false;
 	}
 	store.commit('SET_USER', user);
-	store.commit('SET_FIREBASE_LOADED', true);
+	store.commit('SET_IS_FIREBASE_LOADED', true);
 	// console.log(user);
 });

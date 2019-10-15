@@ -53,7 +53,7 @@ export default {
     return {};
   },
   methods: {
-    ...mapMutations(["SET_EMAIL_SEND", "SET_EMAIL_VERIFIED"]),
+    ...mapMutations(["SET_IS_EMAIL_SEND", "SET_IS_EMAIL_VERIFIED"]),
     signOut() {
       this.$firebase.auth().signOut();
     }
@@ -84,8 +84,8 @@ export default {
         // You can check if the user is new or existing:
         // result.additionalUserInfo.isNewUser
         console.log("success");
-        this.SET_EMAIL_SEND(true);
-        this.SET_EMAIL_VERIFIED(true);
+        this.SET_IS_EMAIL_SEND(true);
+        this.SET_IS_EMAIL_VERIFIED(true);
         // this.$store.state.emailSend = true;
         // this.$store.state.emailVerified = true;
         console.log(this.$store.state.emailSend);

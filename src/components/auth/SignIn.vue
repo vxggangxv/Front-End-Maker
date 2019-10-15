@@ -69,7 +69,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["SET_EMAIL_SEND"]),
+    ...mapMutations(["SET_IS_EMAIL_SEND"]),
     signInWithGoogle() {
       this.$store
         .dispatch("SIGN_IN_WITH_GOOGLE")
@@ -87,7 +87,7 @@ export default {
       this.$store
         .dispatch("SIGN_IN_WITH_EMAIL_LINK", this.form.email)
         .then(() => {
-          this.$store.commit("SET_EMAIL_SEND", true);
+          this.$store.commit("SET_IS_EMAIL_SEND", true);
           // this.$store.state.emailSend = true;
           this.$toasted.global.notice("인증을 위해 이메일을 확인해주세요");
         })
