@@ -153,7 +153,8 @@ export default new Vuex.Store({
 				.firestore()
 				.collection('board')
 				// .where('title', '>=', title)
-				.where('title', '==', title)
+				// .where('title', '==', title)
+				.where('title', '>=', title)
 				// .where('title', 'array-contains', titleList)
 				// .where('title', '<=', 'title')
 				.get();
