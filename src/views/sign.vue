@@ -108,8 +108,8 @@ export default {
         }
         // this.$store.state.emailSend = true;
         // this.$store.state.emailVerified = true;
-        console.log(this.$store.state.emailSend);
-        console.log(this.$store.state.emailVerified);
+        // console.log(this.$store.state.emailSend);
+        // console.log(this.$store.state.emailVerified);
         // this.$router.push("/");
       } catch (error) {
         console.log(error.message);
