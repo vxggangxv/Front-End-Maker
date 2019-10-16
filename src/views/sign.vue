@@ -86,6 +86,26 @@ export default {
         console.log("success");
         this.SET_IS_EMAIL_SEND(true);
         this.SET_IS_EMAIL_VERIFIED(true);
+
+        const user = this.$firebase.auth().currentUser;
+
+        if (
+          this.$firebase
+            .firestore()
+            .collection("user")
+            .doc(user.uid)
+            .get()
+        ) {
+          const increment = this.$firebase.firestore.FieldValue.increment(1);
+          this.$firebase
+            .firestore()
+            .collection("user")
+            .doc(user.uid)
+            .update({
+              visitedAt: new Date(),
+              visitCount: increment
+            });
+        }
         // this.$store.state.emailSend = true;
         // this.$store.state.emailVerified = true;
         console.log(this.$store.state.emailSend);

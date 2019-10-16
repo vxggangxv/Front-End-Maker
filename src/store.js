@@ -31,7 +31,7 @@ export default new Vuex.Store({
 		SET_USER(state, user) {
 			state.user = user;
 		},
-		SET_BOARDS(state, boards) {
+		SET_BOARD_LIST(state, boards) {
 			state.boards = boards;
 		},
 		SET_BOARD(state, board) {
@@ -45,14 +45,35 @@ export default new Vuex.Store({
 		},
 	},
 	actions: {
-		async SIGN_IN_WITH_GOOGLE() {
+		async SIGN_IN_WITH_GOOGLE({ state }) {
 			const provider = new Vue.prototype.$firebase.auth.GoogleAuthProvider();
 			Vue.prototype.$firebase.auth().languageCode = 'ko';
 			await Vue.prototype.$firebase.auth().signInWithPopup(provider);
+
 			const user = Vue.prototype.$firebase.auth().currentUser;
 			user.updateProfile({ displayName: null });
+
+			if (
+				Vue.prototype.$firebase
+					.firestore()
+					.collection('user')
+					.doc(state.user.uid)
+					.get()
+			) {
+				const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(
+					1,
+				);
+				Vue.prototype.$firebase
+					.firestore()
+					.collection('user')
+					.doc(state.user.uid)
+					.update({
+						visitedAt: new Date(),
+						visitCount: increment,
+					});
+			}
 		},
-		async SIGN_IN_WITH_EMAIL_LINK(_, email) {
+		async SIGN_IN_WITH_EMAIL_LINK({ commit }, email) {
 			var actionCodeSettings = {
 				// URL you want to redirect back to. The domain (www.example.com) for this
 				// URL must be whitelisted in the Firebase Console.
@@ -66,6 +87,8 @@ export default new Vuex.Store({
 				.auth()
 				.sendSignInLinkToEmail(email, actionCodeSettings);
 			window.localStorage.setItem('emailForSignIn', email);
+
+			commit('SET_IS_EMAIL_SEND', true);
 		},
 		async CREATE_BOARD(_, { title, content, createdAt, updatedAt, visitedAt }) {
 			const docRef = await Vue.prototype.$firebase
@@ -80,7 +103,7 @@ export default new Vuex.Store({
 				});
 			return docRef;
 		},
-		async FETCH_BOARDS({ commit }) {
+		async FETCH_BOARD_LIST({ commit }) {
 			const snapshot = await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
@@ -109,7 +132,7 @@ export default new Vuex.Store({
 				items.push(item);
 			});
 
-			commit('SET_BOARDS', items);
+			commit('SET_BOARD_LIST', items);
 		},
 		async FETCH_BOARD({ commit }, id) {
 			const snapshot = await Vue.prototype.$firebase
@@ -125,8 +148,8 @@ export default new Vuex.Store({
 
 			commit('SET_BOARD', item);
 		},
-		UPDATE_BOARD({ dispatch }, { bid, title, content }) {
-			Vue.prototype.$firebase
+		async UPDATE_BOARD({ dispatch }, { bid, title, content }) {
+			await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.doc(bid)
@@ -137,8 +160,8 @@ export default new Vuex.Store({
 
 			dispatch('FETCH_BOARD', bid);
 		},
-		DELETE_BOARD({ dispatch }, id) {
-			Vue.prototype.$firebase
+		async DELETE_BOARD({ dispatch }, id) {
+			await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.doc(id)
@@ -169,5 +192,22 @@ export default new Vuex.Store({
 			commit('SET_SEARCH_TITLE', title);
 			commit('SET_SEARCH_LIST', items);
 		},
+		// async visitUser ({ state }) {
+		//   if (!state.user.displayName) return false
+		//   const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(1)
+		//   await Vue.prototype.$firebase.firestore().collection('users').doc(state.user.uid)
+		//     .update({
+		//       displayName: state.user.displayName,
+		//       visitedAt: new Date(),
+		//       visitCount: increment
+		//     })
+		//   return true
+		// },
+		// uploadTask.snapshot.ref.getDownloadURL().then(async (photoURL) => {
+		//   const updatedAt = new Date()
+		//   await user.updateProfile({ updatedAt, photoURL })
+		//   await this.$firebase.firestore().collection('users').doc(user.uid).update({ updatedAt, photoURL })
+		//   this.loading = false
+		// })
 	},
 });

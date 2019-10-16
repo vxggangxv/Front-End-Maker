@@ -20,12 +20,24 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 Vue.prototype.$firebase = firebase;
 
-firebase.auth().onAuthStateChanged(user => {
+firebase.auth().onAuthStateChanged(async user => {
 	if (!user) {
-		store.state.emailSend = false;
-		store.state.emailVerified = false;
+		store.commit('SET_IS_EMAIL_SEND', false);
+		store.commit('SET_IS_EMAIL_VERIFIED', false);
+	}
+	if (user) {
+		// const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(1);
+		// await Vue.prototype.$firebase
+		// 	.firestore()
+		// 	.collection('user')
+		// 	.doc(user.uid)
+		// 	.update({
+		// 		visitedAt: new Date(),
+		// 		visitCount: increment,
+		// 	});
 	}
 	store.commit('SET_USER', user);
 	store.commit('SET_IS_FIREBASE_LOADED', true);
+
 	// console.log(user);
 });

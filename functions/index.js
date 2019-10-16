@@ -48,29 +48,29 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
     visitedAt: new Date(),
     visitCount: 0
   }
-  const r = await db.collection('users').doc(uid).set(d)
+  const r = await db.collection('user').doc(uid).set(d)
   return r
 })
 
 exports.deleteUser = functions.region('asia-east2').auth.user().onDelete((user) => {
-  return db.collection('users').doc(user.uid).delete()
+  return db.collection('user').doc(user.uid).delete()
 })
 
-db.collection('infos').doc('users').get()
+db.collection('infos').doc('user').get()
   .then(s => {
-    if (!s.exists) db.collection('infos').doc('users').set({ counter: 0 })
+    if (!s.exists) db.collection('infos').doc('user').set({ counter: 0 })
   })
 exports.incrementUserCount = functions.firestore
   .document('users/{userId}')
   .onCreate((snap, context) => {
-    return db.collection('infos').doc('users').update(
+    return db.collection('infos').doc('user').update(
       'counter', admin.firestore.FieldValue.increment(1)
     )
   })
 exports.decrementUserCount = functions.firestore
   .document('users/{userID}')
   .onDelete((snap, context) => {
-    return db.collection('infos').doc('users').update(
+    return db.collection('infos').doc('user').update(
       'counter', admin.firestore.FieldValue.increment(-1)
     )
   })

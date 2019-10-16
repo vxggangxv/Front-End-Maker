@@ -106,7 +106,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["FETCH_BOARD", "DELETE_BOARD", "FETCH_BOARDS"]),
+    ...mapActions(["FETCH_BOARD", "DELETE_BOARD", "FETCH_BOARD_LIST"]),
     del() {
       this.DELETE_BOARD(this.bid);
       this.$router.push("/board/list");
@@ -120,8 +120,8 @@ export default {
     this.bid = this.$route.params.id;
     await this.FETCH_BOARD(this.bid);
 
-    await this.$store.dispatch("FETCH_BOARDS");
-    // await this.FETCH_BOARDS;
+    await this.$store.dispatch("FETCH_BOARD_LIST");
+    // await this.FETCH_BOARD_LIST;
   }
 };
 </script>

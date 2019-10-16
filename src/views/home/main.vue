@@ -40,7 +40,7 @@ export default {
   },
   methods: {},
   async created() {
-    await this.$store.dispatch("FETCH_BOARDS");
+    await this.$store.dispatch("FETCH_BOARD_LIST");
   }
 };
 </script>

@@ -122,7 +122,7 @@ export default {
     }
   },
   async created() {
-    await this.$store.dispatch("FETCH_BOARDS");
+    await this.$store.dispatch("FETCH_BOARD_LIST");
     this.items = this.$store.state.boards;
   }
 };
