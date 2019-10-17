@@ -13,12 +13,14 @@
             <v-col cols="5">
               <div class="text-center">
                 <v-avatar size="150" color="grey lighten-4">
-                  <img
-                    v-if="$store.state.user.photoURL"
-                    :src="$store.state.user.photoURL"
-                    alt="avatar"
-                  />
-                  <v-icon v-else size="120">mdi-account</v-icon>
+                  <template v-if="$store.state.user">
+                    <img
+                      v-if="$store.state.user.photoURL"
+                      :src="$store.state.user.photoURL"
+                      alt="avatar"
+                    />
+                    <v-icon v-else size="120">mdi-account</v-icon>
+                  </template>
                 </v-avatar>
 
                 <v-file-input

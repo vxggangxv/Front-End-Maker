@@ -25,11 +25,6 @@ const router = new Router({
 					component: homeMain,
 				},
 				{
-					path: 'mainList',
-					name: 'mainList',
-					component: () => import('@/views/home/mainList.vue'),
-				},
-				{
 					path: 'trending',
 					name: 'trending',
 					component: () => import('@/views/home/trending.vue'),

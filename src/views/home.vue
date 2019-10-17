@@ -1,6 +1,5 @@
 <template>
-  <div class="app-page home">
-    <div id="mainContainer" class="main-container" role="main"></div>
+  <div class="main-">
   </div>
 </template>
 

@@ -3,8 +3,8 @@
     <template v-if="!searchTitle">
       <div class="title">최신 Article</div>
       <v-row>
-        <v-col v-for="item in boards" :key="item.id" cols="12" sm="6" md="4" lg="3">
-          <v-card>
+        <v-col v-for="item in boardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
+          <v-card :to="`/board/list/${item.id}`">
             <v-card-title>{{ item.title }}</v-card-title>
             <v-divider></v-divider>
             <v-card-text v-html="item.content"></v-card-text>
@@ -19,7 +19,7 @@
           <v-card>
             <v-card-title>{{ item.title }}</v-card-title>
             <v-divider></v-divider>
-            <v-card-text v-html="item.content"></v-card-text>
+            <v-card-text v-html="item.content" maxlength></v-card-text>
           </v-card>
         </v-col>
       </v-row>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -36,9 +36,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["boards", "searchTitle", "searchList"])
+    ...mapState(["board", "boardList", "searchTitle", "searchList"])
   },
-  methods: {},
+  methods: {
+    ...mapActions(["FETCH_BOARD"])
+  },
   async created() {
     await this.$store.dispatch("FETCH_BOARD_LIST");
   }

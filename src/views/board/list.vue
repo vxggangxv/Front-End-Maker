@@ -54,7 +54,7 @@
                   <v-card
                     outlined
                     :to="`/board/list/${item.id}`"
-                    v-for="(item) in items"
+                    v-for="(item) in boardList"
                     :key="item.id"
                     class="mt-5"
                   >
@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import BoardBar from "../../components/BoardBar.vue";
 
 export default {
@@ -105,6 +106,7 @@ export default {
     BoardBar
   },
   computed: {
+    ...mapState(["boardList"]),
     firstEmailName() {
       var email = this.$store.state.user.email;
       var emailLength = email.length;
@@ -114,16 +116,25 @@ export default {
     }
   },
   methods: {
-    async goEdit(id) {
+    goEdit(id) {
       this.$router.push("/board/edit/" + id);
     },
     del(id) {
+      // console.log("del");
       this.$store.dispatch("DELETE_BOARD", id);
+      this.getList();
+    },
+    async getList() {
+      try {
+        await this.$store.dispatch("FETCH_BOARD_LIST");
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
-  async created() {
-    await this.$store.dispatch("FETCH_BOARD_LIST");
-    this.items = this.$store.state.boards;
+  created() {
+    this.getList();
+    this.items = this.$store.state.boardList;
   }
 };
 </script>

@@ -56,21 +56,21 @@ exports.deleteUser = functions.region('asia-east2').auth.user().onDelete((user) 
   return db.collection('user').doc(user.uid).delete()
 })
 
-db.collection('infos').doc('user').get()
+db.collection('info').doc('user').get()
   .then(s => {
-    if (!s.exists) db.collection('infos').doc('user').set({ counter: 0 })
+    if (!s.exists) db.collection('info').doc('user').set({ counter: 0 })
   })
 exports.incrementUserCount = functions.firestore
-  .document('users/{userId}')
+  .document('user/{userId}')
   .onCreate((snap, context) => {
-    return db.collection('infos').doc('user').update(
+    return db.collection('info').doc('user').update(
       'counter', admin.firestore.FieldValue.increment(1)
     )
   })
 exports.decrementUserCount = functions.firestore
-  .document('users/{userID}')
+  .document('user/{userId}')
   .onDelete((snap, context) => {
-    return db.collection('infos').doc('user').update(
+    return db.collection('info').doc('user').update(
       'counter', admin.firestore.FieldValue.increment(-1)
     )
   })

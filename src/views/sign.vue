@@ -58,7 +58,7 @@ export default {
       this.$firebase.auth().signOut();
     }
   },
-  async mounted() {
+  async created() {
     // Confirm the link is a sign-in with email link.
     if (this.$firebase.auth().isSignInWithEmailLink(window.location.href)) {
       // Additional state parameters can also be passed via URL.
@@ -89,25 +89,24 @@ export default {
 
         const user = this.$firebase.auth().currentUser;
 
-        if (
-          this.$firebase
-            .firestore()
-            .collection("user")
-            .doc(user.uid)
-            .get()
-        ) {
-          const increment = this.$firebase.firestore.FieldValue.increment(1);
-          this.$firebase
-            .firestore()
-            .collection("user")
-            .doc(user.uid)
-            .update({
-              visitedAt: new Date(),
-              visitCount: increment
-            });
-        }
-        // this.$store.state.emailSend = true;
-        // this.$store.state.emailVerified = true;
+        user.updateProfile({ displayName: null });
+        const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(
+          1
+        );
+
+        this.$firebase
+          .firestore()
+          .collection("user")
+          .get()
+          .then(r => {
+            if (!r.exists) return false;
+            db.collection("user")
+              .doc(user.uid)
+              .update({
+                visitedAt: new Date(),
+                visitCount: increment
+              });
+          });
         // console.log(this.$store.state.emailSend);
         // console.log(this.$store.state.emailVerified);
         // this.$router.push("/");

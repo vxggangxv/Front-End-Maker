@@ -19,6 +19,7 @@
       <!-- <span class="text--color">{{ $refs.myQuillEditor }}</span> -->
 
       <v-btn outlined dark @click="create">작성하기</v-btn>
+      <v-btn outlined dark @click="$router.go(-1)" class="ml-2">뒤로</v-btn>
     </v-app-bar>
 
     <v-content>
@@ -46,7 +47,6 @@ import { dateFormat } from "../../mixins/dateFormat";
 export default {
   data() {
     return {
-      uid: null,
       title: null,
       content: null,
       editorOption: {
