@@ -140,27 +140,41 @@ export default new Vuex.Store({
           .doc(id)
           .get();
   
-        const item = {};
-        const { title, content } = snapshot.data();
-        item.title = title;
-        item.content = content;
-  
+        let item = {};
+        item = snapshot.data();
+        item.id = id;
+        
         commit('SET_BOARD', item);
       } catch (error) {
         console.log(error.message);
       }
 		},
-		async UPDATE_BOARD({ dispatch }, { bid, title, content }) {
-			await Vue.prototype.$firebase
+		UPDATE_BOARD_TITLE({ dispatch }, { bid, titleImg }) {
+			Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.doc(bid)
 				.set({
+					titleImg
+				}, { merge: true }).then(_ => {
+          dispatch('FETCH_BOARD', bid);
+        });
+
+		},
+		UPDATE_BOARD({ dispatch }, { bid, titleImg, title, content }) {
+			Vue.prototype.$firebase
+				.firestore()
+				.collection('board')
+				.doc(bid)
+				.set({
+          titleImg,
 					title,
 					content,
-				});
-
-			dispatch('FETCH_BOARD', bid);
+				}).then(() => {
+          dispatch('FETCH_BOARD', bid);
+        }).catch(error => {
+          console.log(error);
+        });
 		},
 		async DELETE_BOARD(_, id) {
 			await Vue.prototype.$firebase
@@ -175,11 +189,8 @@ export default new Vuex.Store({
 			const querySnapshot = await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
-				// .where('title', '>=', title)
 				// .where('title', '==', title)
 				.where('title', '>=', title)
-				// .where('title', 'array-contains', titleList)
-				// .where('title', '<=', 'title')
 				.get();
 			let item = {};
 			let items = [];

@@ -72,8 +72,32 @@ export default {
       this.editor.focus();
     },
     update() {
-      const { bid, title, content } = this;
-      this.$store.dispatch("UPDATE_BOARD", { bid, title, content });
+      let { bid, title, content } = this;
+      let titleImg = null;
+      let tmpContent = "";
+      let n = 0;
+      let n2 = 0;
+      let endIndexNumber = 0;
+
+      this.$store.dispatch("UPDATE_BOARD", { bid, titleImg, title, content });
+
+      let matchCount = content.match(/<img/g);
+      if (matchCount != null) {
+        // console.log(matchCount.length);
+        n = content.indexOf("<img");
+        n2 = content.indexOf(">", n);
+        titleImg = content.substring(n, n2 + 1);
+        console.log(titleImg);
+        this.$store.dispatch("UPDATE_BOARD_TITLE", { bid, titleImg });
+
+        for (let i = 0; i < matchCount.length; i++) {
+          n = content.indexOf("<img");
+          n2 = content.indexOf(">", n);
+          tmpContent = content.substring(n, n2 + 1);
+          content = content.replace(tmpContent, "");
+        }
+      }
+
       this.$router.push(`/board/list/${this.bid}`);
     },
     uploadFunction(e) {
