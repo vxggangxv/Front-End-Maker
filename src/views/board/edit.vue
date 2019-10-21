@@ -40,12 +40,16 @@
 </template>
 
 <script>
+import { dateFormat } from "../../mixins/dateFormat";
+
 export default {
   data() {
     return {
       bid: null,
       title: null,
       content: null,
+      titleImg: null,
+      summary: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       visitedAt: new Date(),
@@ -54,6 +58,7 @@ export default {
       }
     };
   },
+  mixins: [dateFormat],
   methods: {
     onEditorBlur(quill) {
       // console.log("editor blur!", quill);
@@ -72,14 +77,14 @@ export default {
       this.editor.focus();
     },
     update() {
+      const updatedAt = this.getTodayType1();
       let { bid, title, content } = this;
       let titleImg = null;
+      let summary = null;
+      let writer = this.$store.state.user.email;
       let tmpContent = "";
       let n = 0;
       let n2 = 0;
-      let endIndexNumber = 0;
-
-      this.$store.dispatch("UPDATE_BOARD", { bid, titleImg, title, content });
 
       let matchCount = content.match(/<img/g);
       if (matchCount != null) {
@@ -87,23 +92,31 @@ export default {
         n = content.indexOf("<img");
         n2 = content.indexOf(">", n);
         titleImg = content.substring(n, n2 + 1);
-        console.log(titleImg);
-        this.$store.dispatch("UPDATE_BOARD_TITLE", { bid, titleImg });
-
-        for (let i = 0; i < matchCount.length; i++) {
-          n = content.indexOf("<img");
-          n2 = content.indexOf(">", n);
-          tmpContent = content.substring(n, n2 + 1);
-          content = content.replace(tmpContent, "");
-        }
+        // console.log(titleImg);
       }
+
+      let maxLength = 420;
+      summary = content.replace(/(<([^>]+)>)/gi, "");
+      if (content.length > maxLength) {
+        summary = summary.substring(0, maxLength + 1);
+      }
+
+      this.$store.dispatch("UPDATE_BOARD", {
+        bid,
+        title,
+        titleImg,
+        content,
+        summary,
+        writer,
+        updatedAt
+      });
 
       this.$router.push(`/board/list/${this.bid}`);
     },
     uploadFunction(e) {
       this.selectedFile = e.target.files[0];
 
-      console.log(this.selectedFile);
+      // console.log(this.selectedFile);
 
       // var form = new FormData();
       // form.append("file", this.selectedFile);
@@ -155,13 +168,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.v-content {
-  background: #fff;
-}
-.content-viewer {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ccc;
-  box-sizing: border-box;
-  background: #fff;
-}
+// .v-content {
+//   background: #fff;
+// }
+// .content-viewer {
+//   padding: 12px 15px;
+//   border-bottom: 1px solid #ccc;
+//   box-sizing: border-box;
+//   background: #fff;
+// }
 </style>

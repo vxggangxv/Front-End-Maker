@@ -16,7 +16,7 @@
         <v-divider></v-divider>
         <v-list-item to="/board/write">새 글 작성</v-list-item>
         <v-divider></v-divider>
-        <v-list-item to="/home/user">프로필 수정</v-list-item>
+        <v-list-item to="/home/userProfile">프로필 수정</v-list-item>
         <v-divider></v-divider>
         <v-list-item @click="signOut">로그아웃</v-list-item>
       </v-list>

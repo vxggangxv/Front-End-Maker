@@ -107,11 +107,10 @@ export default {
   },
   computed: {
     ...mapState(["boardList"]),
-    ...mapGetters(["getFirstEmailName"]),
+    ...mapGetters(["firstEmailName"]),
     firstName() {
-      return "@" + this.getFirstEmailName;
-    },
-    getDate() {}
+      return "@" + this.firstEmailName;
+    }
   },
   methods: {
     goEdit(id) {
@@ -124,11 +123,7 @@ export default {
     },
     async getList() {
       try {
-        // console.log(this.$store.state.user.email);
-        await this.$store.dispatch(
-          "FETCH_MY_BOARD_LIST",
-          this.$store.state.user.email
-        );
+        await this.$store.dispatch("FETCH_MY_BOARD_LIST");
       } catch (error) {
         console.log(error);
       }
@@ -137,14 +132,6 @@ export default {
   created() {
     this.getList();
     this.items = this.$store.state.boardList;
-    console.log(this.items);
-    // console.log(this.items[0].createdAt);
-    this.items.forEach(item => {
-      // console.log(item.createdAt);
-      item.createdAt = item.createdAt.substr(0, 10);
-      // console.log(item.createdAt);
-    });
-    // console.log(this.items[0].createdAt);
   }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-view></router-view>
+    <router-view class="board-wrapper"></router-view>
   </div>
 </template>
 
@@ -8,5 +8,18 @@
 export default {};
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.board-wrapper {
+  .quill-editor {
+    width: 768px;
+    .ql-container {
+      font-size: 16px;
+      // color: rgba(0, 0, 0, 0.54);
+      color: #000;
+    }
+  }
+  .v-content {
+    background: #fff;
+  }
+}
 </style>

@@ -40,9 +40,9 @@ const router = new Router({
 					component: () => import('@/views/home/tag.vue'),
 				},
 				{
-					path: 'user',
-					name: 'user',
-					component: () => import('@/views/home/user.vue'),
+					path: 'userProfile',
+					name: 'userProfile',
+					component: () => import('@/views/home/userProfile.vue'),
 				},
 			],
 		},
@@ -59,6 +59,11 @@ const router = new Router({
 					path: 'write',
 					name: 'write',
 					component: () => import('@/views/board/write.vue'),
+				},
+				{
+					path: 'user/:id',
+					name: 'user',
+					component: () => import('@/views/board/user.vue'),
 				},
 				{
 					path: 'list',

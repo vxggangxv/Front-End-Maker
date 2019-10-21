@@ -14,7 +14,16 @@ export default new Vuex.Store({
 		board: {},
 		searchTitle: '',
 		searchList: [],
-	},
+  },
+  getters: {
+    getFirstEmailName(state) {
+      var email = state.user.email;
+      // var emailLength = email.length;
+      var dot = email.lastIndexOf("@");
+      var first = email.substring(0, dot);
+      return first;
+    },
+  },
 	mutations: {
 		SET_IS_DRAWER(state, toggle) {
 			state.drawer = toggle;
@@ -37,12 +46,12 @@ export default new Vuex.Store({
 		SET_BOARD(state, board) {
 			state.board = board;
 		},
-		SET_SEARCH_TITLE(state, searchTitle) {
-			state.searchTitle = searchTitle;
-		},
-		SET_SEARCH_LIST(state, searchList) {
-			state.searchList = searchList;
-		},
+		// SET_SEARCH_TITLE(state, searchTitle) {
+		// 	state.searchTitle = searchTitle;
+		// },
+		// SET_SEARCH_LIST(state, searchList) {
+		// 	state.searchList = searchList;
+		// },
 	},
 	actions: {
 		async SIGN_IN_WITH_GOOGLE() {
@@ -83,16 +92,18 @@ export default new Vuex.Store({
 
 			commit('SET_IS_EMAIL_SEND', true);
 		},
-		async CREATE_BOARD(_, { title, content, createdAt, updatedAt, visitedAt }) {
+		async CREATE_BOARD(_, { title, content, titleImg, summary, writer, createdAt, updatedAt}) {
 			const docRef = await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.add({
 					title,
-					content,
+          content,
+          titleImg, 
+          summary,
+          writer,
 					createdAt,
 					updatedAt,
-					visitedAt,
 				});
 			return docRef;
 		},
@@ -101,7 +112,7 @@ export default new Vuex.Store({
         const snapshot = await Vue.prototype.$firebase
           .firestore()
           .collection('board')
-          .orderBy('title')
+          .orderBy('createdAt', 'desc')
           .get();
           
         let item = {};
@@ -149,41 +160,54 @@ export default new Vuex.Store({
         console.log(error.message);
       }
 		},
-		UPDATE_BOARD_TITLE({ dispatch }, { bid, titleImg }) {
+		UPDATE_BOARD({ dispatch }, { bid, title, content, titleImg, summary, writer, updatedAt }) {
 			Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.doc(bid)
 				.set({
-					titleImg
-				}, { merge: true }).then(_ => {
-          dispatch('FETCH_BOARD', bid);
-        });
-
-		},
-		UPDATE_BOARD({ dispatch }, { bid, titleImg, title, content }) {
-			Vue.prototype.$firebase
-				.firestore()
-				.collection('board')
-				.doc(bid)
-				.set({
-          titleImg,
 					title,
-					content,
-				}).then(() => {
+          content,
+          titleImg,
+          summary,
+          writer,
+          updatedAt
+				}, { merge: true } ).then(() => {
           dispatch('FETCH_BOARD', bid);
         }).catch(error => {
           console.log(error);
         });
-		},
+    },
 		async DELETE_BOARD(_, id) {
 			await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.doc(id)
 				.delete();
+    },
+    async FETCH_MY_BOARD_LIST({ commit }, writer) {
+      try {
+        const snapshot = await Vue.prototype.$firebase
+          .firestore()
+          .collection('board')
+          .where('writer', '==', writer)
+          .orderBy('createdAt', 'desc')
+          .get();
+          
+        let item = {};
+        let items = [];
+        snapshot.forEach(doc => {
+          item = doc.data();
+          item.id = doc.id;
+          items.push(item);
+        });
+  
+        commit('SET_BOARD_LIST', items);
+      } catch (error) {
+        console.log(error);
+      }
 		},
-		async SEARCH_LIST({ commit }, title) {
+		async SEARCH_BOARD_LIST({ commit }, title) {
 			// let titleList = [];
 			// titleList.push(title);
 			const querySnapshot = await Vue.prototype.$firebase
@@ -200,8 +224,9 @@ export default new Vuex.Store({
 				items.push(item);
 			});
 
-			commit('SET_SEARCH_TITLE', title);
-			commit('SET_SEARCH_LIST', items);
+			// commit('SET_SEARCH_TITLE', title);
+			// commit('SET_SEARCH_LIST', items);
+			commit('SET_BOARD_LIST', items);
 		},
 		// async visitUser ({ state }) {
 		//   if (!state.user.displayName) return false

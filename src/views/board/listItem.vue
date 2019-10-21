@@ -31,7 +31,7 @@
                     <span>@{{ $store.state.user.displayName }}</span>
                   </template>
                   <template v-else>
-                    <span>{{ firstEmailName }}</span>
+                    <span>{{ firstName }}</span>
                   </template>
                 </template>
               </v-col>
@@ -48,14 +48,14 @@
                       <a class="ml-2 body-2 grey--text" @click.prevent="del()">삭제</a>
                     </div>
                   </v-card-text>
-                  <v-card-text class="px-0 mt-10 mb-5" v-html="content"></v-card-text>
+                  <v-card-text class="px-0 mt-10 mb-5 subtitle-1 black--text" v-html="content"></v-card-text>
                 </v-card>
               </v-col>
             </v-row>
           </v-col>
           <v-spacer class="hidden-sm-and-down"></v-spacer>
         </v-row>
-        <v-row class="another-post-row py-5">
+        <!-- <v-row class="another-post-row py-5">
           <v-spacer class="hidden-sm-and-down"></v-spacer>
           <v-col cols="12" md="7" lg="6" xl="5">
             <div class="my-post font-weight-bold">나의 다른 포스트</div>
@@ -71,14 +71,14 @@
             </template>
           </v-col>
           <v-spacer class="hidden-sm-and-down"></v-spacer>
-        </v-row>
+        </v-row>-->
       </v-container>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import BoardBar from "../../components/BoardBar.vue";
 
 export default {
@@ -95,18 +95,15 @@ export default {
   },
   computed: {
     ...mapState(["boardList", "board"]),
+    ...mapGetters(["getFirstEmailName"]),
+    firstName() {
+      return "@" + this.getFirstEmailName;
+    },
     title() {
       return this.board.title;
     },
     content() {
       return this.board.content;
-    },
-    firstEmailName() {
-      var email = this.$store.state.user.email;
-      var emailLength = email.length;
-      var dot = email.lastIndexOf("@");
-      var first = email.substring(0, dot);
-      return "@" + first;
     }
   },
   methods: {
@@ -116,6 +113,7 @@ export default {
       this.$router.push("/board/list");
     },
     anotherPost(id, $el) {
+      this.bid = id;
       this.FETCH_BOARD(id);
       window.scrollTo(0, 0);
       if (id === this.$route.params.id) return;

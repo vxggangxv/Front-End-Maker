@@ -21,7 +21,7 @@
               label="Solo"
               placeholder="Search"
               solo
-              v-model="searchTitle"
+              v-model="inputSearchTitle"
               @keydown.enter="searchList"
             ></v-text-field>
             <span class="search-form-icon" @click="searchList">
@@ -50,36 +50,42 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
     return {
-      searchTitle: "",
+      inputSearchTitle: "",
       items: [
-        {
-          icon: "mdi-trending-up",
-          title: "트렌딩",
-          path: "/home/trending"
-        },
+        // {
+        //   icon: "mdi-trending-up",
+        //   title: "트렌딩",
+        //   path: "/home/trending"
+        // },
         {
           icon: "mdi-update",
           title: "최신 포스트",
           path: "/home/post"
-        },
-        {
-          icon: "mdi-tag-multiple",
-          title: "태그",
-          path: "/home/tag"
         }
+        // {
+        //   icon: "mdi-tag-multiple",
+        //   title: "태그",
+        //   path: "/home/tag"
+        // }
       ]
     };
   },
+  computed: {
+    // ...mapState(["boardList", "searchList"]),
+    invalidInput() {
+      return !this.inputSearchTitle.trim();
+    }
+  },
   methods: {
-    ...mapActions(["SEARCH_LIST"]),
+    ...mapActions(["FETCH_BOARD_LIST", "SEARCH_BOARD_LIST"]),
     searchList() {
-      const title = this.searchTitle;
-      this.SEARCH_LIST(this.searchTitle);
+      if (this.invalidInput) this.FETCH_BOARD_LIST();
+      this.SEARCH_BOARD_LIST(this.inputSearchTitle);
     }
   }
 };

@@ -80,15 +80,38 @@ export default {
     async create() {
       const createdAt = this.getTodayType1();
       const updatedAt = this.getTodayType1();
-      const visitedAt = this.getTodayType1();
 
-      const { title, content } = this;
+      let { title, content } = this;
+      let titleImg = null;
+      let summary = null;
+      let writer = this.$store.state.user.email;
+      let tmpContent = "";
+      let n = 0;
+      let n2 = 0;
+
+      let matchCount = content.match(/<img/g);
+      if (matchCount != null) {
+        // console.log(matchCount.length);
+        n = content.indexOf("<img");
+        n2 = content.indexOf(">", n);
+        titleImg = content.substring(n, n2 + 1);
+        // console.log(titleImg);
+      }
+
+      let maxLength = 420;
+      summary = content.replace(/(<([^>]+)>)/gi, "");
+      if (content.length > maxLength) {
+        summary = summary.substring(0, maxLength + 1);
+      }
+
       const docRef = await this.$store.dispatch("CREATE_BOARD", {
         title,
         content,
+        titleImg,
+        summary,
+        writer,
         createdAt,
-        updatedAt,
-        visitedAt
+        updatedAt
       });
       this.$router.push(`/board/list/${docRef.id}`);
     }
@@ -99,13 +122,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.v-content {
-  background: #fff;
-}
-.content-viewer {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ccc;
-  box-sizing: border-box;
-  background: #fff;
-}
+// .v-content {
+//   background: #fff;
+// }
+// .content-viewer {
+//   padding: 12px 15px;
+//   border-bottom: 1px solid #ccc;
+//   box-sizing: border-box;
+//   background: #fff;
+// }
 </style>
