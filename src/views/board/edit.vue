@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { dateFormat } from "../../mixins/dateFormat";
 
 export default {
@@ -59,6 +60,9 @@ export default {
     };
   },
   mixins: [dateFormat],
+  computed: {
+    ...mapState(["user"])
+  },
   methods: {
     onEditorBlur(quill) {
       // console.log("editor blur!", quill);
@@ -81,7 +85,9 @@ export default {
       let { bid, title, content } = this;
       let titleImg = null;
       let summary = null;
+      let uid = this.$store.state.user.uid;
       let writer = this.$store.state.user.email;
+      let photoURL = this.$store.state.user.photoURL;
       let tmpContent = "";
       let n = 0;
       let n2 = 0;
@@ -102,12 +108,14 @@ export default {
       }
 
       this.$store.dispatch("UPDATE_BOARD", {
-        bid,
+        id: bid,
         title,
         titleImg,
         content,
         summary,
         writer,
+        uid,
+        photoURL,
         updatedAt
       });
 
@@ -164,6 +172,7 @@ export default {
     await this.$store.dispatch("FETCH_BOARD", this.bid);
     this.title = this.$store.state.board.title;
     this.content = this.$store.state.board.content;
+    console.log(this.$store.state.user.uid);
   }
 };
 </script>

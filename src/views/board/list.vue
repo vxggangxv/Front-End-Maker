@@ -50,11 +50,11 @@
               <v-spacer class="hidden-xs-only"></v-spacer>
               <v-col cols="12" sm="9" :class="$vuetify.breakpoint.lgAndUp ? 'px-0' : null">
                 <span class="my-post blue--text">나의 포스트</span>
-                <template v-if="items">
+                <template v-if="getBoardList">
                   <v-card
                     outlined
                     :to="`/board/list/${item.id}`"
-                    v-for="(item) in boardList"
+                    v-for="(item) in getBoardList"
                     :key="item.id"
                     class="mt-5"
                   >
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import BoardBar from "../../components/BoardBar.vue";
 
 export default {
@@ -106,14 +106,18 @@ export default {
     BoardBar
   },
   computed: {
-    ...mapState(["boardList"]),
-    ...mapGetters(["getFirstEmailName"]),
+    ...mapState({
+      userEmail: state => state.user.email,
+      uid: state => state.user.uid
+    }),
+    ...mapGetters(["getFirstEmailName", "getBoardList"]),
     firstName() {
       return "@" + this.getFirstEmailName;
     },
     getDate() {}
   },
   methods: {
+    ...mapActions(["FETCH_MY_BOARD_LIST"]),
     goEdit(id) {
       this.$router.push("/board/edit/" + id);
     },
@@ -122,29 +126,13 @@ export default {
       this.$store.dispatch("DELETE_BOARD", id);
       this.getList();
     },
-    async getList() {
-      try {
-        // console.log(this.$store.state.user.email);
-        await this.$store.dispatch(
-          "FETCH_MY_BOARD_LIST",
-          this.$store.state.user.email
-        );
-      } catch (error) {
-        console.log(error);
-      }
+    getList() {
+      // console.log(this.$store.state.user.email);
+      this.FETCH_MY_BOARD_LIST(this.uid);
     }
   },
   created() {
     this.getList();
-    this.items = this.$store.state.boardList;
-    console.log(this.items);
-    // console.log(this.items[0].createdAt);
-    this.items.forEach(item => {
-      // console.log(item.createdAt);
-      item.createdAt = item.createdAt.substr(0, 10);
-      // console.log(item.createdAt);
-    });
-    // console.log(this.items[0].createdAt);
   }
 };
 </script>

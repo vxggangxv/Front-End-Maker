@@ -50,11 +50,11 @@
               <v-spacer class="hidden-xs-only"></v-spacer>
               <v-col cols="12" sm="9" :class="$vuetify.breakpoint.lgAndUp ? 'px-0' : null">
                 <span class="my-post blue--text">나의 포스트</span>
-                <template v-if="items">
+                <template v-if="getBoardList">
                   <v-card
                     outlined
                     :to="`/board/list/${item.id}`"
-                    v-for="(item) in boardList"
+                    v-for="(item) in getBoardList"
                     :key="item.id"
                     class="mt-5"
                   >
@@ -93,12 +93,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import BoardBar from "../../components/BoardBar.vue";
 
 export default {
   data() {
     return {
+      uid: null,
       items: []
     };
   },
@@ -106,13 +107,17 @@ export default {
     BoardBar
   },
   computed: {
-    ...mapState(["boardList"]),
-    ...mapGetters(["firstEmailName"]),
+    ...mapState({
+      userEmail: state => state.user.email
+    }),
+    ...mapGetters(["getFirstEmailName", "getBoardList"]),
     firstName() {
-      return "@" + this.firstEmailName;
-    }
+      return "@" + this.getFirstEmailName;
+    },
+    getDate() {}
   },
   methods: {
+    ...mapActions(["FETCH_MY_BOARD_LIST"]),
     goEdit(id) {
       this.$router.push("/board/edit/" + id);
     },
@@ -121,17 +126,15 @@ export default {
       this.$store.dispatch("DELETE_BOARD", id);
       this.getList();
     },
-    async getList() {
-      try {
-        await this.$store.dispatch("FETCH_MY_BOARD_LIST");
-      } catch (error) {
-        console.log(error);
-      }
+    getList() {
+      // console.log(this.$store.state.user.email);
+      this.FETCH_MY_BOARD_LIST(this.userEmail);
     }
   },
   created() {
+    this.uid = this.$route.params.id;
+    console.log(this.uid);
     this.getList();
-    this.items = this.$store.state.boardList;
   }
 };
 </script>

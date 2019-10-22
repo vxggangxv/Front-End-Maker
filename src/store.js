@@ -23,6 +23,13 @@ export default new Vuex.Store({
       var first = email.substring(0, dot);
       return first;
     },
+    getBoardList(state) {
+      const getBoardList = state.boardList;
+      getBoardList.forEach(item => {
+        item.createdAt = item.createdAt.substr(0, 10);
+      });
+      return getBoardList;
+    }
   },
 	mutations: {
 		SET_IS_DRAWER(state, toggle) {
@@ -54,7 +61,7 @@ export default new Vuex.Store({
 		// },
 	},
 	actions: {
-		async SIGN_IN_WITH_GOOGLE() {
+		async SIGN_IN_WITH_GOOGLE({ commit }) {
       const provider = new Vue.prototype.$firebase.auth.GoogleAuthProvider();
       const auth = Vue.prototype.$firebase.auth();
 			auth.languageCode = 'ko';
@@ -92,7 +99,7 @@ export default new Vuex.Store({
 
 			commit('SET_IS_EMAIL_SEND', true);
 		},
-		async CREATE_BOARD(_, { title, content, titleImg, summary, writer, createdAt, updatedAt}) {
+		async CREATE_BOARD(_, { title, content, titleImg, summary, writer, uid, photoURL, createdAt, updatedAt}) {
 			const docRef = await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
@@ -102,6 +109,8 @@ export default new Vuex.Store({
           titleImg, 
           summary,
           writer,
+          uid,
+          photoURL,
 					createdAt,
 					updatedAt,
 				});
@@ -113,6 +122,7 @@ export default new Vuex.Store({
           .firestore()
           .collection('board')
           .orderBy('createdAt', 'desc')
+          .orderBy('title')
           .get();
           
         let item = {};
@@ -160,20 +170,22 @@ export default new Vuex.Store({
         console.log(error.message);
       }
 		},
-		UPDATE_BOARD({ dispatch }, { bid, title, content, titleImg, summary, writer, updatedAt }) {
+		UPDATE_BOARD({ dispatch }, { id, title, content, titleImg, summary, writer, uid, photoURL, updatedAt }) {
 			Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
-				.doc(bid)
+				.doc(id)
 				.set({
 					title,
           content,
           titleImg,
           summary,
           writer,
+          uid,
+          photoURL,
           updatedAt
 				}, { merge: true } ).then(() => {
-          dispatch('FETCH_BOARD', bid);
+          dispatch('FETCH_BOARD', id);
         }).catch(error => {
           console.log(error);
         });
@@ -185,12 +197,12 @@ export default new Vuex.Store({
 				.doc(id)
 				.delete();
     },
-    async FETCH_MY_BOARD_LIST({ commit }, writer) {
+    async FETCH_MY_BOARD_LIST({ commit }, uid) {
       try {
         const snapshot = await Vue.prototype.$firebase
           .firestore()
           .collection('board')
-          .where('writer', '==', writer)
+          .where('uid', '==', uid)
           .orderBy('createdAt', 'desc')
           .get();
           
@@ -214,7 +226,8 @@ export default new Vuex.Store({
 				.firestore()
 				.collection('board')
 				// .where('title', '==', title)
-				.where('title', '>=', title)
+        .where('title', '>=', title)
+				.orderBy('title')
 				.get();
 			let item = {};
 			let items = [];

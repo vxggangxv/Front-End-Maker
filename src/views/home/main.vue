@@ -2,10 +2,12 @@
   <v-container fluid>
     <div class="title">최신 Article</div>
     <v-row>
-      <v-col v-for="item in boardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
-        <v-card class="post-card" :to="`/board/list/${item.id}`">
+      <v-col v-for="item in getBoardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
+        <v-card class="post-card">
           <div class="thumbnail-container" v-if="item.titleImg">
-            <figure v-html="item.titleImg"></figure>
+            <router-link :to="`/board/list/${item.id}`" class="black--text">
+              <figure v-html="item.titleImg"></figure>
+            </router-link>
             <!-- <v-btn v-if="!$store.state.user" @click="goSignIn" color="white" depressed>로그인</v-btn>
             <v-btn v-else icon v-on="on" class="avatar-btn">
               <v-avatar size="36" color="white">
@@ -20,13 +22,24 @@
           </div>
           <v-card-title class="pt-5 pb-3">
             <div class="post-title-wrapper">
-              <span class="writer green--text">{{ item.writer }}</span>
-              <div class="post-title">{{ item.title }}</div>
-              <div class="date grey--text">{{ item.updatedAt }}</div>
+              <div class="post-writer">
+                <router-link :to="`/board/user/${item.uid}`">
+                  <v-avatar size="36" color="grey lighten-3">
+                    <img v-if="item.photoURL" :src="item.photoURL" alt="avatar" />
+                    <v-icon v-else>mdi-account</v-icon>
+                  </v-avatar>
+                  <span class="writer green--text">{{ item.writer }}</span>
+                </router-link>
+              </div>
+
+              <div class="post-title">
+                <router-link :to="`/board/list/${item.id}`" class="black--text">{{ item.title }}</router-link>
+              </div>
+              <div class="date grey--text">{{ item.createdAt }}</div>
             </div>
           </v-card-title>
           <v-divider class="mx-4"></v-divider>
-          <v-card-text class="pt-7">
+          <v-card-text class="pt-6">
             <template v-if="item.titleImg">
               <div class="post-text-wrapper">
                 <div v-html="item.summary" class="post-text line-clamp01"></div>
@@ -45,7 +58,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -54,15 +67,15 @@ export default {
     };
   },
   computed: {
-    ...mapState(["board", "boardList"])
+    ...mapGetters(["getBoardList"])
   },
   methods: {
-    ...mapActions(["FETCH_BOARD", "UPDATE_BOARD_TITLE"])
+    ...mapMutations(["SET_IS_EMAIL_SEND"])
   },
-  async created() {
-    await this.$store.dispatch("FETCH_BOARD_LIST");
-    this.$store.commit("SET_IS_EMAIL_SEND", false);
-    // console.log(this.$store.state.boardList);
+  created() {
+    // this.$store.commit('SET_IS_EMAIL_SEND', false);
+    this.SET_IS_EMAIL_SEND(false);
+    this.$store.dispatch("FETCH_BOARD_LIST");
   }
 };
 </script>
@@ -85,11 +98,16 @@ export default {
   overflow: hidden;
   .post-title-wrapper {
     height: 110px;
-    .writer {
+    .post-writer {
       display: block;
       font-size: 13px;
+      .writer {
+        display: inline-block;
+        margin-left: 10px;
+      }
     }
     .post-title {
+      margin-top: 3px;
       line-height: 1.3;
     }
     .date {

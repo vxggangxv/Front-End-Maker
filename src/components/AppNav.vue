@@ -76,7 +76,6 @@ export default {
     };
   },
   computed: {
-    // ...mapState(["boardList", "searchList"]),
     invalidInput() {
       return !this.inputSearchTitle.trim();
     }
@@ -84,7 +83,8 @@ export default {
   methods: {
     ...mapActions(["FETCH_BOARD_LIST", "SEARCH_BOARD_LIST"]),
     searchList() {
-      if (this.invalidInput) this.FETCH_BOARD_LIST();
+      if (this.invalidInput) return this.FETCH_BOARD_LIST();
+      // if (this.invalidInput) return;
       this.SEARCH_BOARD_LIST(this.inputSearchTitle);
     }
   }

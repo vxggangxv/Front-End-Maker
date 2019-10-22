@@ -8,7 +8,8 @@ export const dateFormat = {
 			const hours = date.getHours();
 			const minutes = date.getMinutes();
 			const seconds = date.getSeconds();
-			return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`;
+			const milliseconds = date.getMilliseconds();
+			return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}:${milliseconds}`;
 		},
 	},
 };
