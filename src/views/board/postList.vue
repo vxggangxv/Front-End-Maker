@@ -10,12 +10,8 @@
             <v-row>
               <v-col cols="12" sm="3">
                 <v-avatar :size="$vuetify.breakpoint.xlOnly ? 160 : 150" color="grey lighten-4">
-                  <img
-                    v-if="$store.state.user.photoURL"
-                    :src="$store.state.user.photoURL"
-                    alt="avatar"
-                  />
-                  <v-icon v-else size="125">mdi-account</v-icon>
+                  <v-icon v-if="!boardUser.photoURL" size="125">mdi-account</v-icon>
+                  <img v-else :src="boardUser.photoURL" alt="avatar" />
                 </v-avatar>
               </v-col>
               <v-col
@@ -25,23 +21,20 @@
                 sm="9"
               >
                 <div class="mt-3">
-                  <template v-if="$store.state.user.displayName">
-                    <span class="blue--text">@{{ $store.state.user.displayName }}</span>
-                  </template>
-                  <template v-else>
+                  <template v-if="!boardUser.displayName">
                     <div class="blue--text">{{ firstName }}</div>
                   </template>
+                  <template v-else>
+                    <span class="blue--text">@{{ boardUser.displayName }}</span>
+                  </template>
                 </div>
-                <!-- <v-divider class="mt-12"></v-divider> -->
                 <v-divider class="mt-3"></v-divider>
                 <div class="pt-4">
-                  <template v-if="$store.state.user.displayName">
-                    <span class="font-weight-bold display-1">{{ $store.state.user.displayName }}</span>
+                  <template v-if="boardUser.displayName">
+                    <span class="font-weight-bold display-1">{{ boardUser.displayName }}</span>
                   </template>
                   <template v-else>
-                    <span
-                      class="font-weight-bold display-1 letter-space-n10"
-                    >{{ $store.state.user.email }}</span>
+                    <span class="font-weight-bold display-1 letter-space-n10">{{ boardUser.email }}</span>
                   </template>
                 </div>
               </v-col>
@@ -49,7 +42,7 @@
             <v-row>
               <v-spacer class="hidden-xs-only"></v-spacer>
               <v-col cols="12" sm="9" :class="$vuetify.breakpoint.lgAndUp ? 'px-0' : null">
-                <span class="my-post blue--text">나의 포스트</span>
+                <span class="my-post blue--text">포스트</span>
                 <template v-if="getBoardList">
                   <v-card
                     outlined
@@ -61,18 +54,21 @@
                     <v-card-title>{{ item.title }}</v-card-title>
                     <v-divider class="mx-4"></v-divider>
                     <v-card-text class="mb-n3">
-                      <!-- {{ item }} -->
                       {{ item.createdAt }} 작성
-                      <span class="float-right">
-                        <v-btn color="primary" @click.prevent="goEdit(item.id)" small outlined>수정</v-btn>
-                        <v-btn
-                          class="ml-2"
-                          color="error"
-                          @click.prevent="del(item.id)"
-                          small
-                          outlined
-                        >삭제</v-btn>
-                      </span>
+                      <template
+                        v-if="$store.state.user.uid === boardUser.uid"
+                      >
+                        <span class="float-right">
+                          <v-btn color="primary" @click.prevent="goEdit(item.id)" small outlined>수정</v-btn>
+                          <v-btn
+                            class="ml-2"
+                            color="error"
+                            @click.prevent="del(item.id)"
+                            small
+                            outlined
+                          >삭제</v-btn>
+                        </span>
+                      </template>
                     </v-card-text>
                     <v-card-actions></v-card-actions>
                   </v-card>
@@ -94,47 +90,55 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
+import { getHelper } from "../../mixins/getHelper";
 import BoardBar from "../../components/BoardBar.vue";
 
 export default {
   data() {
     return {
+      items: [],
       uid: null,
-      items: []
+      firstName: ""
     };
   },
+  mixins: [getHelper],
   components: {
     BoardBar
   },
   computed: {
     ...mapState({
-      userEmail: state => state.user.email
+      // userEmail: state => state.user.email,
+      // uid: state => state.user.uid,
+      boardUser: "boardUser"
     }),
-    ...mapGetters(["getFirstEmailName", "getBoardList"]),
-    firstName() {
-      return "@" + this.getFirstEmailName;
-    },
+    ...mapGetters(["getBoardList"]),
     getDate() {}
   },
   methods: {
-    ...mapActions(["FETCH_MY_BOARD_LIST"]),
+    ...mapActions(["FETCH_USER_BOARD_LIST", "FETCH_BOARD_USER"]),
     goEdit(id) {
       this.$router.push("/board/edit/" + id);
     },
     del(id) {
       // console.log("del");
+      // console.log(id);
       this.$store.dispatch("DELETE_BOARD", id);
-      this.getList();
+      this.getList(this.uid);
     },
-    getList() {
+    getList(uid) {
       // console.log(this.$store.state.user.email);
-      this.FETCH_MY_BOARD_LIST(this.userEmail);
+      this.FETCH_USER_BOARD_LIST(uid);
     }
   },
   created() {
     this.uid = this.$route.params.id;
-    console.log(this.uid);
-    this.getList();
+    this.getList(this.uid);
+    // console.log(this.uid);
+    // this.FETCH_BOARD_USER(this.uid);
+    this.FETCH_BOARD_USER(this.uid).then(() => {
+      // console.log(this.boardUser);
+      this.firstName = "@" + this.getFirstEmailName(this.boardUser.email);
+    });
   }
 };
 </script>

@@ -61,18 +61,14 @@ const router = new Router({
 					component: () => import('@/views/board/write.vue'),
 				},
 				{
-					path: 'user/:id',
-					name: 'user',
-					component: () => import('@/views/board/user.vue'),
-				},
-				{
-					path: 'list',
-					name: 'list',
-					component: () => import('@/views/board/list.vue'),
-				},
-				{
 					path: 'list/:id',
-					component: () => import('@/views/board/listItem.vue'),
+					name: 'postList',
+					component: () => import('@/views/board/postList.vue'),
+				},
+				{
+          path: 'post/:id',
+          name: 'postItem',
+					component: () => import('@/views/board/postItem.vue'),
 				},
 				{
 					path: 'edit/:id',

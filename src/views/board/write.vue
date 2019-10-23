@@ -84,7 +84,9 @@ export default {
       let { title, content } = this;
       let titleImg = null;
       let summary = null;
-      let writer = this.$store.state.user.email;
+      let uid = this.$store.state.user.uid;
+      let email = this.$store.state.user.email;
+      let photoURL = this.$store.state.user.photoURL;
       let tmpContent = "";
       let n = 0;
       let n2 = 0;
@@ -109,11 +111,13 @@ export default {
         content,
         titleImg,
         summary,
-        writer,
+        uid,
+        email,
+        photoURL,
         createdAt,
         updatedAt
       });
-      this.$router.push(`/board/list/${docRef.id}`);
+      this.$router.push(`/board/post/${docRef.id}`);
     }
   },
   mounted() {

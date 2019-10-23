@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import { dateFormat } from "../../mixins/dateFormat";
 
 export default {
@@ -51,7 +51,6 @@ export default {
       content: null,
       titleImg: null,
       summary: null,
-      createdAt: new Date(),
       updatedAt: new Date(),
       visitedAt: new Date(),
       editorOption: {
@@ -64,6 +63,7 @@ export default {
     ...mapState(["user"])
   },
   methods: {
+    ...mapActions(["UPDATE_BOARD"]),
     onEditorBlur(quill) {
       // console.log("editor blur!", quill);
     },
@@ -86,7 +86,7 @@ export default {
       let titleImg = null;
       let summary = null;
       let uid = this.$store.state.user.uid;
-      let writer = this.$store.state.user.email;
+      let email = this.$store.state.user.email;
       let photoURL = this.$store.state.user.photoURL;
       let tmpContent = "";
       let n = 0;
@@ -107,19 +107,23 @@ export default {
         summary = summary.substring(0, maxLength + 1);
       }
 
-      this.$store.dispatch("UPDATE_BOARD", {
+      this.UPDATE_BOARD({
         id: bid,
         title,
         titleImg,
         content,
         summary,
-        writer,
+        email,
         uid,
         photoURL,
         updatedAt
-      });
-
-      this.$router.push(`/board/list/${this.bid}`);
+      })
+        .then(() => {
+          this.$router.push(`/board/post/${this.bid}`);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     uploadFunction(e) {
       this.selectedFile = e.target.files[0];
@@ -172,7 +176,7 @@ export default {
     await this.$store.dispatch("FETCH_BOARD", this.bid);
     this.title = this.$store.state.board.title;
     this.content = this.$store.state.board.content;
-    console.log(this.$store.state.user.uid);
+    // console.log(this.$store.state.user.uid);
   }
 };
 </script>

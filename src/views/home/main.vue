@@ -23,17 +23,17 @@
           <v-card-title class="pt-5 pb-3">
             <div class="post-title-wrapper">
               <div class="post-writer">
-                <router-link :to="`/board/user/${item.uid}`">
+                <router-link :to="`/board/list/${item.uid}`">
                   <v-avatar size="36" color="grey lighten-3">
                     <img v-if="item.photoURL" :src="item.photoURL" alt="avatar" />
                     <v-icon v-else>mdi-account</v-icon>
                   </v-avatar>
-                  <span class="writer green--text">{{ item.writer }}</span>
+                  <span class="writer green--text">{{ item.email }}</span>
                 </router-link>
               </div>
 
               <div class="post-title">
-                <router-link :to="`/board/list/${item.id}`" class="black--text">{{ item.title }}</router-link>
+                <router-link :to="`/board/post/${item.id}`" class="black--text">{{ item.title }}</router-link>
               </div>
               <div class="date grey--text">{{ item.createdAt }}</div>
             </div>
@@ -70,12 +70,19 @@ export default {
     ...mapGetters(["getBoardList"])
   },
   methods: {
-    ...mapMutations(["SET_IS_EMAIL_SEND"])
+    ...mapMutations(["SET_IS_EMAIL_SEND"]),
+    ...mapActions(["FETCH_BOARD_LIST"])
   },
   created() {
     // this.$store.commit('SET_IS_EMAIL_SEND', false);
     this.SET_IS_EMAIL_SEND(false);
-    this.$store.dispatch("FETCH_BOARD_LIST");
+    this.FETCH_BOARD_LIST();
+    // this.$store.dispatch("FETCH_BOARD_LIST").then(() => {
+    //   console.log(this.getBoardList);
+    // });
+    // this.FETCH_BOARD_LIST().then(() => {
+    //   console.log(this.getBoardList);
+    // });
   }
 };
 </script>

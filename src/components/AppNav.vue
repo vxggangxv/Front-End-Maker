@@ -65,7 +65,7 @@ export default {
         {
           icon: "mdi-update",
           title: "최신 포스트",
-          path: "/home/post"
+          path: "/"
         }
         // {
         //   icon: "mdi-tag-multiple",

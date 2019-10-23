@@ -28,7 +28,9 @@
                   placeholder="Pick an avatar"
                   prepend-icon="mdi-camera"
                   label="Avatar"
+                  ref="avatar"
                   v-model="file"
+                  :loading="avatarLoading"
                   @change="updateAvatar"
                 ></v-file-input>
               </div>
@@ -39,8 +41,11 @@
                   <v-text-field
                     class="mt-n4"
                     label="nickName"
+                    ref="nickName"
                     v-model="form.nickName"
+                    :loading="nickLoading"
                     :rules="[rules.required, rules.maxLength(20)]"
+                    @keydown.prevent.enter="updateNick"
                     required
                   ></v-text-field>
                   <v-spacer></v-spacer>
@@ -71,12 +76,14 @@
 
 <script>
 import { mapMutations } from "vuex";
+import { getHelper } from "../../mixins/getHelper";
 
 export default {
   data() {
     return {
       file: null,
-      loading: false,
+      nickLoading: false,
+      avatarLoading: false,
       nickChangeType: false,
       form: {
         nickName: ""
@@ -92,12 +99,18 @@ export default {
       valid: false
     };
   },
+  mixins: [getHelper],
   methods: {
     ...mapMutations(["SET_USER"]),
     blurEvt() {},
     nickChangeCancel() {
-      this.form.nickName = "";
+      // this.form.nickName = "";
+      // this.$refs.nickName.focus();
       this.nickChangeType = true;
+      this.$nextTick(() => {
+        this.$refs.nickName.focus();
+      });
+      // console.log(this.$refs);
     },
     async updateAvatar() {
       // console.log(this.file);
@@ -120,8 +133,8 @@ export default {
         return;
       }
 
+      const fileExtension = this.getExtension(this.file.name);
       const storageRef = this.$firebase.storage().ref();
-      // this.loading = true;
       const user = this.$firebase.auth().currentUser;
       // const uploadTask = storageRef.child(user.uid).put(this.files)
 
@@ -136,13 +149,6 @@ export default {
       //   contentType: 'image/jpeg'
       // };
 
-      function getExtension(fileName) {
-        var fileLength = fileName.length;
-        var lastDot = fileName.lastIndexOf(".");
-        var fileExtension = fileName.substring(lastDot + 1, fileLength);
-        return fileExtension;
-      }
-      const fileExtension = getExtension(this.file.name);
       const uploadTask = storageRef
         .child("images/users/" + user.uid + "/" + "avatar." + fileExtension)
         .put(this.file);
@@ -150,6 +156,7 @@ export default {
       uploadTask.on(
         this.$firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
         snapshot => {
+          this.avatarLoading = true;
           this.progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           switch (snapshot.state) {
@@ -163,21 +170,25 @@ export default {
         },
         error => {
           this.$toasted.global.error(error.code);
-          // this.loading = false;
+          this.avatarLoading = false;
         },
         () => {
           uploadTask.snapshot.ref.getDownloadURL().then(async photoURL => {
+            // const updatedAt = this.getTodayType1();
+            const updatedAt = new Date();
             await user.updateProfile({
               photoURL
             });
+            await this.$firebase
+              .firestore()
+              .collection("user")
+              .doc(user.uid)
+              .set({ updatedAt, photoURL }, { merge: true });
             this.SET_USER(user);
-            // await this.$firebase
-            //   .firestore()
-            //   .collection("users")
-            //   .doc(user.uid)
-            //   .update({ updatedAt, photoURL });
-            // this.loading = false;
             this.file = null;
+            this.$refs.avatar.blur();
+            this.avatarLoading = false;
+            // console.log(this.$refs.avatar);
             // console.log("File available at", photoURL);
           });
         }
@@ -194,13 +205,33 @@ export default {
         showCancelButton: true
       });
       if (!r.value) return;
+      this.nickLoading = true;
+
       const user = this.$firebase.auth().currentUser;
+      const updatedAt = new Date();
       const displayName = this.form.nickName;
-      await user.updateProfile({ displayName });
+      await user
+        .updateProfile({ displayName })
+        .then(() => {
+          console.log("ok");
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      await this.$firebase
+        .firestore()
+        .collection("user")
+        .doc(user.uid)
+        .set({ updatedAt, displayName }, { merge: true });
       this.SET_USER(user);
+      this.form.nickName = "";
       this.nickChangeType = false;
-      this.form.nickName = null;
+      this.nickLoading = false;
+      // console.log("ok");
     }
+  },
+  mounted() {
+    // console.log(this.$refs.nickName);
   }
 };
 </script>

@@ -10,19 +10,13 @@ export default new Vuex.Store({
 		emailVerified: false,
 		firebaseLoaded: false,
 		user: null,
+		boardUser: null,
 		boardList: [],
 		board: {},
 		searchTitle: '',
 		searchList: [],
   },
   getters: {
-    getFirstEmailName(state) {
-      var email = state.user.email;
-      // var emailLength = email.length;
-      var dot = email.lastIndexOf("@");
-      var first = email.substring(0, dot);
-      return first;
-    },
     getBoardList(state) {
       const getBoardList = state.boardList;
       getBoardList.forEach(item => {
@@ -47,11 +41,14 @@ export default new Vuex.Store({
 		SET_USER(state, user) {
 			state.user = user;
 		},
+    SET_BOARD_USER(state, boardUser) {
+      state.boardUser = boardUser;
+    },
 		SET_BOARD_LIST(state, boardList) {
-			state.boardList = boardList;
+      state.boardList = boardList;
 		},
 		SET_BOARD(state, board) {
-			state.board = board;
+      state.board = board;
 		},
 		// SET_SEARCH_TITLE(state, searchTitle) {
 		// 	state.searchTitle = searchTitle;
@@ -98,8 +95,8 @@ export default new Vuex.Store({
 			window.localStorage.setItem('emailForSignIn', email);
 
 			commit('SET_IS_EMAIL_SEND', true);
-		},
-		async CREATE_BOARD(_, { title, content, titleImg, summary, writer, uid, photoURL, createdAt, updatedAt}) {
+    },
+		async CREATE_BOARD(_, { title, content, titleImg, summary, email, uid, photoURL, createdAt, updatedAt}) {
 			const docRef = await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
@@ -108,7 +105,7 @@ export default new Vuex.Store({
           content,
           titleImg, 
           summary,
-          writer,
+          email,
           uid,
           photoURL,
 					createdAt,
@@ -133,7 +130,7 @@ export default new Vuex.Store({
           items.push(item);
         });
   
-        commit('SET_BOARD_LIST', items);
+        return commit('SET_BOARD_LIST', items);
       } catch (error) {
         console.log(error);
       }
@@ -169,8 +166,8 @@ export default new Vuex.Store({
       } catch (error) {
         console.log(error.message);
       }
-		},
-		UPDATE_BOARD({ dispatch }, { id, title, content, titleImg, summary, writer, uid, photoURL, updatedAt }) {
+    },
+		UPDATE_BOARD({ dispatch }, { id, title, content, titleImg, summary, email, uid, photoURL, updatedAt }) {
 			Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
@@ -180,7 +177,7 @@ export default new Vuex.Store({
           content,
           titleImg,
           summary,
-          writer,
+          email,
           uid,
           photoURL,
           updatedAt
@@ -191,13 +188,14 @@ export default new Vuex.Store({
         });
     },
 		async DELETE_BOARD(_, id) {
+      // console.log('call ' , id);
 			await Vue.prototype.$firebase
 				.firestore()
 				.collection('board')
 				.doc(id)
 				.delete();
     },
-    async FETCH_MY_BOARD_LIST({ commit }, uid) {
+    async FETCH_USER_BOARD_LIST({ commit }, uid) {
       try {
         const snapshot = await Vue.prototype.$firebase
           .firestore()
@@ -218,6 +216,23 @@ export default new Vuex.Store({
       } catch (error) {
         console.log(error);
       }
+    },
+    async FETCH_BOARD_USER({ commit }, id) {
+      try {
+        const snapshot = await Vue.prototype.$firebase
+          .firestore()
+          .collection('user')
+          .doc(id)
+          .get();
+  
+        let item = {};
+        item = snapshot.data();
+        item.id = id;
+        
+        return commit('SET_BOARD_USER', item);
+      } catch (error) {
+        console.log(error.message);
+      }
 		},
 		async SEARCH_BOARD_LIST({ commit }, title) {
 			// let titleList = [];
@@ -227,7 +242,6 @@ export default new Vuex.Store({
 				.collection('board')
 				// .where('title', '==', title)
         .where('title', '>=', title)
-				.orderBy('title')
 				.get();
 			let item = {};
 			let items = [];
@@ -240,7 +254,8 @@ export default new Vuex.Store({
 			// commit('SET_SEARCH_TITLE', title);
 			// commit('SET_SEARCH_LIST', items);
 			commit('SET_BOARD_LIST', items);
-		},
+    },
+    
 		// async visitUser ({ state }) {
 		//   if (!state.user.displayName) return false
 		//   const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(1)
