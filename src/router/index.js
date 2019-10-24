@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import store from './store';
-import homeIndex from './views/home/index.vue';
-import homeMain from './views/home/main.vue';
+import store from '../store/';
+import homeIndex from '../views/home/index.vue';
+import homeMain from '../views/home/main.vue';
 
 Vue.use(Router);
 
@@ -100,7 +100,7 @@ const router = new Router({
 		{
 			path: '*',
 			name: 'e404',
-			component: () => import('./views/e404.vue'),
+			component: () => import('../views/e404.vue'),
 		},
 	],
 });

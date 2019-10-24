@@ -77,6 +77,11 @@ export default {
     // this.$store.commit('SET_IS_EMAIL_SEND', false);
     this.SET_IS_EMAIL_SEND(false);
     this.FETCH_BOARD_LIST();
+    this.$nextTick(() => {
+      console.log(this.getBoardList[0].photoURL);
+      console.log(this.$store.state.user.photoURL);
+      this.getBoardList[0].photoURL = this.$store.state.user.photoURL;
+    });
     // this.$store.dispatch("FETCH_BOARD_LIST").then(() => {
     //   console.log(this.getBoardList);
     // });

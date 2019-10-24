@@ -83,13 +83,11 @@ export default {
         // result.additionalUserInfo.profile == null
         // You can check if the user is new or existing:
         // result.additionalUserInfo.isNewUser
-        console.log("success");
+        // console.log("success");
         this.SET_IS_EMAIL_SEND(true);
         this.SET_IS_EMAIL_VERIFIED(true);
 
         const user = this.$firebase.auth().currentUser;
-
-        user.updateProfile({ displayName: null });
         const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(
           1
         );
@@ -97,9 +95,10 @@ export default {
         this.$firebase
           .firestore()
           .collection("user")
+          .doc(user.uid)
           .get()
           .then(r => {
-            if (!r.exists) return false;
+            if (!r.exists) return user.updateProfile({ displayName: null });
             db.collection("user")
               .doc(user.uid)
               .update({

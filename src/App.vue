@@ -23,6 +23,9 @@ img {
 .pos-relative {
   position: relative;
 }
+.lh-1 {
+  line-height: 1;
+}
 $logo-color: #1ea1f7 !important;
 .app-logo-comm {
   font-size: 50px !important;

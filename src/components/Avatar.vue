@@ -11,7 +11,7 @@
         </v-btn>
       </template>
 
-      <v-list class="pa-0 body-2" dense flat>
+      <v-list v-if="$store.state.user" class="pa-0 body-2" dense flat>
         <v-list-item :to="`/board/list/${user.uid}`">내 포스트</v-list-item>
         <v-divider></v-divider>
         <v-list-item to="/board/write">새 글 작성</v-list-item>

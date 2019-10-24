@@ -75,7 +75,7 @@ export default {
         .dispatch("SIGN_IN_WITH_GOOGLE")
         .then(() => {
           this.$router.push("/");
-          console.log("success");
+          // console.log("success");
         })
         .catch(error => {
           console.log(error);

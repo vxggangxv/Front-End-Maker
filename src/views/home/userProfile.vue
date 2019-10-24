@@ -13,12 +13,8 @@
             <v-col cols="5">
               <div class="text-center">
                 <v-avatar size="150" color="grey lighten-4">
-                  <template v-if="$store.state.user">
-                    <img
-                      v-if="$store.state.user.photoURL"
-                      :src="$store.state.user.photoURL"
-                      alt="avatar"
-                    />
+                  <template v-if="user">
+                    <img v-if="user.photoURL" :src="user.photoURL" alt="avatar" />
                     <v-icon v-else size="120">mdi-account</v-icon>
                   </template>
                 </v-avatar>
@@ -36,35 +32,84 @@
               </div>
             </v-col>
             <v-col cols="7">
-              <template v-if="$store.state.user">
-                <div v-if="nickChangeType" class="d-flex">
-                  <v-text-field
-                    class="mt-n4"
-                    label="nickName"
-                    ref="nickName"
-                    v-model="form.nickName"
-                    :loading="nickLoading"
-                    :rules="[rules.required, rules.maxLength(20)]"
-                    @keydown.prevent.enter="updateNick"
-                    required
-                  ></v-text-field>
-                  <v-spacer></v-spacer>
-                  <v-btn :disabled="!valid" @click="updateNick" outlined small>변경</v-btn>
-                  <v-btn class="ml-1" @click="nickChangeType = false" outlined small>취소</v-btn>
+              <template v-if="user">
+                <div v-if="isUpdateType">
+                  <div>
+                    <v-text-field
+                      class="mt-n4"
+                      label="displayName"
+                      ref="displayName"
+                      v-model="form.displayName"
+                      :loading="userUpdateLoading"
+                      :rules="[rules.maxLength(20)]"
+                      required
+                    ></v-text-field>
+                  </div>
+                  <div>
+                    <v-text-field
+                      class="mt-n4"
+                      label="about me"
+                      v-model="form.aboutMe"
+                      :loading="userUpdateLoading"
+                      :rules="[rules.maxLength(20)]"
+                      required
+                    ></v-text-field>
+                  </div>
+                  <p class="mb-1">Social Info</p>
+                  <div>
+                    <v-text-field
+                      label="Github"
+                      v-model="form.github"
+                      prepend-icon="mdi-github-circle"
+                      :loading="userUpdateLoading"
+                      :rules="[rules.maxLength(50)]"
+                      required
+                    ></v-text-field>
+                  </div>
+                  <div>
+                    <v-text-field
+                      class="mt-n4"
+                      label="Homepage"
+                      v-model="form.homepage"
+                      prepend-icon="mdi-home-circle"
+                      :loading="userUpdateLoading"
+                      :rules="[rules.maxLength(50)]"
+                      required
+                    ></v-text-field>
+                  </div>
                 </div>
-                <div v-else class="d-flex">
-                  <span class="font-weight-bold">{{ $store.state.user.displayName }}</span>
-                  <v-spacer></v-spacer>
-                  <v-btn outlined small @click="nickChangeCancel">닉네임 변경</v-btn>
+                <div v-else>
+                  <p class="mb-0 font-weight-bold">{{ user.displayName }}</p>
+                  <p class="mb-0" v-if="user.aboutMe">{{ user.aboutMe }}</p>
+                  <p class="mb-0 mt-2" v-if="user.github">
+                    <v-icon>mdi-github-circle</v-icon>
+                    {{ user.github }}
+                  </p>
+                  <p class="mb-0" v-if="user.homepage">
+                    <v-icon>mdi-google-chrome</v-icon>
+                    <!-- <v-icon>mdi-home-circle</v-icon> -->
+                    {{ user.homepage }}
+                  </p>
                 </div>
-                <div class="mt-2">
-                  <span class="font-weight-thin">{{ $store.state.user.email }}</span>
+                <div>
+                  <span class="font-weight-thin">
+                    <v-icon>mdi-at</v-icon>
+                    {{ user.email }}
+                  </span>
+                </div>
+                <div class="mt-2 d-flex">
+                  <v-spacer></v-spacer>
+                  <template v-if="isUpdateType">
+                    <v-btn :disabled="!valid" @click="updateUser" outlined small>저장</v-btn>
+                    <v-btn class="ml-1" @click="isUpdateType = false" outlined small>취소</v-btn>
+                  </template>
+                  <template v-else>
+                    <v-btn outlined small @click="nickChangeCancel">변경</v-btn>
+                  </template>
                 </div>
               </template>
               <!-- <div class="mt-2">
-                <v-btn class="font-weight-thin" @click="blurEvt">
-                  블러 테스트
-                </v-btn>
+                <v-btn class="font-weight-thin" @click="fetchUser">패치유저</v-btn>
               </div>-->
             </v-col>
           </v-row>
@@ -75,18 +120,21 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import { getHelper } from "../../mixins/getHelper";
 
 export default {
   data() {
     return {
       file: null,
-      nickLoading: false,
-      avatarLoading: false,
-      nickChangeType: false,
+      userUpdateLoading: false,
+      // avatarLoading: true,
+      isUpdateType: false,
       form: {
-        nickName: ""
+        displayName: "",
+        aboutMe: "",
+        github: "",
+        homepage: ""
       },
       rules: {
         required: v => !!v || "필수 항목입니다.",
@@ -100,15 +148,23 @@ export default {
     };
   },
   mixins: [getHelper],
+  computed: {
+    ...mapState(["user", "avatarLoading"])
+  },
   methods: {
     ...mapMutations(["SET_USER"]),
+    ...mapActions(["UPDATE_AVATAR", "UPDATE_USER", "FETCH_USER"]),
     blurEvt() {},
     nickChangeCancel() {
-      // this.form.nickName = "";
-      // this.$refs.nickName.focus();
-      this.nickChangeType = true;
+      // this.form.displayName = "";
+      // this.$refs.displayName.focus();
+      this.isUpdateType = true;
       this.$nextTick(() => {
-        this.$refs.nickName.focus();
+        this.$refs.displayName.focus();
+        this.form.displayName = this.user.displayName || "";
+        this.form.aboutMe = this.user.aboutMe || "";
+        this.form.github = this.user.social.github || "";
+        this.form.homepage = this.user.social.homepage || "";
       });
       // console.log(this.$refs);
     },
@@ -132,69 +188,23 @@ export default {
         this.file = null;
         return;
       }
+      // this.avatarLoading = true;
 
-      const fileExtension = this.getExtension(this.file.name);
-      const storageRef = this.$firebase.storage().ref();
-      const user = this.$firebase.auth().currentUser;
-      // const uploadTask = storageRef.child(user.uid).put(this.files)
+      const file = this.file;
+      const uid = this.user.uid;
+      const updatedAt = new Date();
 
-      // const config = {
-      //   quality: 0.5,
-      //   maxWidth: 500,
-      //   maxHeight: 500,
-      //   autoRotate: true
-      // };
-      // const resizedImage = await readAndCompressImage(this.file, config);
-      // var metadata = {
-      //   contentType: 'image/jpeg'
-      // };
-
-      const uploadTask = storageRef
-        .child("images/users/" + user.uid + "/" + "avatar." + fileExtension)
-        .put(this.file);
-
-      uploadTask.on(
-        this.$firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-        snapshot => {
-          this.avatarLoading = true;
-          this.progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          switch (snapshot.state) {
-            case this.$firebase.storage.TaskState.PAUSED: // or 'paused'
-              this.$toasted.global.error("Upload is paused");
-              break;
-            case this.$firebase.storage.TaskState.RUNNING: // or 'running'
-              // this.$toasted.global.notice('Upload is running')
-              break;
-          }
-        },
-        error => {
-          this.$toasted.global.error(error.code);
-          this.avatarLoading = false;
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then(async photoURL => {
-            // const updatedAt = this.getTodayType1();
-            const updatedAt = new Date();
-            await user.updateProfile({
-              photoURL
-            });
-            await this.$firebase
-              .firestore()
-              .collection("user")
-              .doc(user.uid)
-              .set({ updatedAt, photoURL }, { merge: true });
-            this.SET_USER(user);
-            this.file = null;
-            this.$refs.avatar.blur();
-            this.avatarLoading = false;
-            // console.log(this.$refs.avatar);
-            // console.log("File available at", photoURL);
-          });
-        }
-      );
+      await this.UPDATE_AVATAR({ uid, updatedAt, file }).then(() => {
+        this.file = null;
+        this.$refs.avatar.blur();
+        // this.avatarLoading = false;
+      });
     },
-    async updateNick() {
+    // async fetchUser() {
+    //   const { uid } = this.$firebase.auth().currentUser;
+    //   this.$store.dispatch("FETCH_USER", uid);
+    // },
+    async updateUser() {
       if (!this.$refs.form.validate())
         return this.$toasted.global.error("입력 폼을 올바르게 작성해주세요.");
       const r = await this.$swal.fire({
@@ -205,33 +215,28 @@ export default {
         showCancelButton: true
       });
       if (!r.value) return;
-      this.nickLoading = true;
+      this.userUpdateLoading = true;
 
-      const user = this.$firebase.auth().currentUser;
+      // const uid = this.$firebase.auth().currentUser.uid;
+      const uid = this.user.uid;
       const updatedAt = new Date();
-      const displayName = this.form.nickName;
-      await user
-        .updateProfile({ displayName })
-        .then(() => {
-          console.log("ok");
-        })
-        .catch(error => {
-          console.log(error);
-        });
-      await this.$firebase
-        .firestore()
-        .collection("user")
-        .doc(user.uid)
-        .set({ updatedAt, displayName }, { merge: true });
-      this.SET_USER(user);
-      this.form.nickName = "";
-      this.nickChangeType = false;
-      this.nickLoading = false;
-      // console.log("ok");
+      const { displayName, aboutMe, github, homepage } = this.form;
+
+      await this.UPDATE_USER({
+        uid,
+        updatedAt,
+        displayName,
+        aboutMe,
+        github,
+        homepage
+      }).then(() => {
+        this.isUpdateType = false;
+        this.userUpdateLoading = false;
+      });
     }
   },
   mounted() {
-    // console.log(this.$refs.nickName);
+    // console.log(this.avatarLoading);
   }
 };
 </script>

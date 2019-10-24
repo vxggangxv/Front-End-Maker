@@ -36,7 +36,8 @@ firebase.auth().onAuthStateChanged(async user => {
 		// 		visitCount: increment,
 		// 	});
 	}
-	store.commit('SET_USER', user);
+  // store.commit('SET_USER', user);
+  store.dispatch('FETCH_USER', user.uid)
 	store.commit('SET_IS_FIREBASE_LOADED', true);
 
 	// console.log(user);
