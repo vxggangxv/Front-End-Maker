@@ -14,6 +14,9 @@ const mutations = {
   SET_IS_AVATAR_LOADING(state, toggle) {
     state.avatarLoading = toggle;
   },
+  SET_USER_LIST(state, userList) {
+    state.userList = userList;
+  },
   SET_USER(state, user) {
     state.user = user;
   },

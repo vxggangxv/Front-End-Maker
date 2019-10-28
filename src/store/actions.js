@@ -44,6 +44,21 @@ const actions = {
 
     commit('SET_IS_EMAIL_SEND', true);
   },
+  async FETCH_USER_LIST({ commit }) {
+    const snapshot = await Vue.prototype.$firebase
+      .firestore().collection('user').get();
+    let item = {};
+    let items = [];
+    snapshot.forEach(doc => {
+      item = doc.data();
+      item.id = doc.id;
+      items.push(item);
+    });
+
+    // console.log(items);
+    
+    commit('SET_USER_LIST', items);
+  },
   async FETCH_USER({ commit }, uid) {
     // const user = Vue.prototype.$firebase.auth().currentUser;
     const snapshot = await Vue.prototype.$firebase
@@ -67,13 +82,13 @@ const actions = {
   },
   async UPDATE_AVATAR({ state, dispatch }, { uid, updatedAt, file }){
     state.avatarLoading = true;
-    // function getExtension(fileName) {
-    //   var fileLength = fileName.length;
-    //   var lastDot = fileName.lastIndexOf(".");
-    //   var fileExtension = fileName.substring(lastDot + 1, fileLength);
-    //   return fileExtension;
-    // }
-    // const fileExtension = getExtension(file.name);
+    function getExtension(fileName) {
+      var fileLength = fileName.length;
+      var lastDot = fileName.lastIndexOf(".");
+      var fileExtension = fileName.substring(lastDot + 1, fileLength);
+      return fileExtension;
+    }
+    const fileExtension = getExtension(file.name);
     const storageRef = Vue.prototype.$firebase.storage().ref();
     
     // const uploadTask = storageRef.child(user.uid).put(this.files)
@@ -90,7 +105,7 @@ const actions = {
     // };
 
     const uploadTask = storageRef
-      .child("images/users/" + uid + "/" + file.name)
+      .child("images/users/" + uid + "/avater." + fileExtension)
       .put(file);
 
     await uploadTask.on(

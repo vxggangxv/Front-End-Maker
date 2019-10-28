@@ -10,8 +10,8 @@
             <v-row>
               <v-col cols="2" sm="1">
                 <v-avatar size="62" color="grey lighten-4">
-                  <v-icon v-if="!board.photoURL" size="50">mdi-account</v-icon>
-                  <img v-else :src="board.photoURL" alt="avatar" />
+                  <v-icon v-if="!getUserBoard.photoURL" size="50">mdi-account</v-icon>
+                  <img v-else :src="getUserBoard.photoURL" alt="avatar" />
                 </v-avatar>
               </v-col>
               <v-col
@@ -20,9 +20,9 @@
                 cols="10"
                 sm="11"
               >
-                <template v-if="board">
-                  <template v-if="board.displayName">
-                    <span>@{{ board.displayName }}</span>
+                <template v-if="getUserBoard">
+                  <template v-if="getUserBoard.displayName">
+                    <span>@{{ getUserBoard.displayName }}</span>
                   </template>
                   <template v-else>
                     <span>{{ firstName }}</span>
@@ -37,8 +37,11 @@
                   <v-divider></v-divider>
                   <v-card-text class="px-0">
                     <div class="float-right">
-                      <router-link class="body-2 grey--text" :to="`/board/list/${board.uid}`">목록보기</router-link>
-                      <template v-if="$store.state.user.uid === board.uid">
+                      <router-link
+                        class="body-2 grey--text"
+                        :to="`/board/list/${getUserBoard.uid}`"
+                      >목록보기</router-link>
+                      <template v-if="$store.state.user.uid === getUserBoard.uid">
                         <router-link class="ml-2 body-2 grey--text" :to="`/board/edit/${bid}`">수정</router-link>
                         <a class="ml-2 body-2 grey--text" @click.prevent="del()">삭제</a>
                       </template>
@@ -94,15 +97,21 @@ export default {
   },
   computed: {
     ...mapState(["boardList", "board"]),
+    ...mapGetters(["getUserBoard"]),
     title() {
-      return this.board.title;
+      return this.getUserBoard.title;
     },
     content() {
-      return this.board.content;
+      return this.getUserBoard.content;
     }
   },
   methods: {
-    ...mapActions(["FETCH_BOARD", "DELETE_BOARD", "FETCH_BOARD_LIST"]),
+    ...mapActions([
+      "FETCH_USER_LIST",
+      "FETCH_BOARD",
+      "DELETE_BOARD",
+      "FETCH_BOARD_LIST"
+    ]),
     del() {
       this.DELETE_BOARD(this.bid);
       this.$router.push("/board/list");
@@ -117,11 +126,13 @@ export default {
   },
   created() {
     this.bid = this.$route.params.id;
-    // this.FETCH_BOARD(this.bid);
-    this.FETCH_BOARD(this.bid).then(() => {
-      // console.log(this.board);
-      this.firstName = "@" + this.getFirstEmailName(this.board.email);
-    });
+    this.FETCH_USER_LIST()
+      .then(() => {
+        this.FETCH_BOARD(this.bid);
+      })
+      .then(() => {
+        this.firstName = "@" + this.getFirstEmailName(this.getUserBoard.email);
+      });
 
     // await this.$store.dispatch("FETCH_BOARD_LIST");
     // await this.FETCH_BOARD_LIST;

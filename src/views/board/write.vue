@@ -33,9 +33,7 @@
           @ready="onEditorReady($event)"
         ></quill-editor>
 
-        <!-- <v-col class="pt-0 pl-0" cols="6">
-          <div class="content-viewer" v-html="content"></div>
-        </v-col>-->
+        <input type="file" id="getFile" @change="uploadFunction" hidden />
       </v-row>
     </v-content>
   </v-app>
@@ -118,6 +116,46 @@ export default {
         updatedAt
       });
       this.$router.push(`/board/post/${docRef.id}`);
+    },
+    uploadFunction(e) {
+      this.selectedFile = e.target.files[0];
+
+      // console.log(this.selectedFile);
+
+      // var form = new FormData();
+      // form.append("file", this.selectedFile);
+      // form.append("name", this.selectedFile.name);
+
+      const storageRef = this.$firebase.storage().ref();
+      const uploadTask = storageRef
+        .child("images/board/" + this.bid + "/" + this.selectedFile.name)
+        .put(this.selectedFile);
+
+      uploadTask.on(
+        this.$firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        snapshot => {
+          this.progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          switch (snapshot.state) {
+            case this.$firebase.storage.TaskState.PAUSED: // or 'paused'
+              this.$toasted.global.error("Upload is paused");
+              break;
+            case this.$firebase.storage.TaskState.RUNNING: // or 'running'
+              break;
+          }
+        },
+        error => {
+          this.$toasted.global.error(error.code);
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(async imgURL => {
+            // this code to set your position cursor
+            const range = this.$refs.myQuillEditor.quill.getSelection();
+            //this code to set image on your server to quill editor
+            this.$refs.myQuillEditor.quill.insertEmbed(range, "image", imgURL);
+          });
+        }
+      );
     }
   },
   mounted() {

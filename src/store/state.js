@@ -4,6 +4,7 @@ const state = {
 		emailVerified: false,
 		firebaseLoaded: false,
 		user: null,
+		userList: [],
 		avatarLoading: false,
 		boardUser: null,
 		boardList: [],

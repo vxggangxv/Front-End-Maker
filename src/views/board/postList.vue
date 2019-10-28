@@ -46,7 +46,7 @@
                 <template v-if="getBoardList">
                   <v-card
                     outlined
-                    :to="`/board/list/${item.id}`"
+                    :to="`/board/post/${item.id}`"
                     v-for="(item) in getBoardList"
                     :key="item.id"
                     class="mt-5"

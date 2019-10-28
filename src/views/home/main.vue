@@ -2,7 +2,7 @@
   <v-container fluid>
     <div class="title">최신 Article</div>
     <v-row>
-      <v-col v-for="item in getBoardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
+      <v-col v-for="item in getUserBoardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
         <v-card class="post-card">
           <div class="thumbnail-container" v-if="item.titleImg">
             <router-link :to="`/board/list/${item.id}`" class="black--text">
@@ -20,23 +20,35 @@
               </v-avatar>
             </v-btn>-->
           </div>
-          <v-card-title class="pt-5 pb-3">
-            <div class="post-title-wrapper">
-              <div class="post-writer">
-                <router-link :to="`/board/list/${item.uid}`">
-                  <v-avatar size="36" color="grey lighten-3">
-                    <img v-if="item.photoURL" :src="item.photoURL" alt="avatar" />
-                    <v-icon v-else>mdi-account</v-icon>
-                  </v-avatar>
-                  <span class="writer green--text">{{ item.email }}</span>
-                </router-link>
-              </div>
-
-              <div class="post-title">
-                <router-link :to="`/board/post/${item.id}`" class="black--text">{{ item.title }}</router-link>
-              </div>
-              <div class="date grey--text">{{ item.createdAt }}</div>
+          <v-card-title class="post-title-wrapper pt-4 pb-3">
+            <div class="post-writer">
+              <router-link class="board-avatar" :to="`/board/list/${item.uid}`">
+                <v-avatar size="40" color="grey lighten-3">
+                  <img v-if="item.photoURL" :src="item.photoURL" alt="avatar" />
+                  <v-icon v-else>mdi-account</v-icon>
+                </v-avatar>
+              </router-link>
+              <!-- <router-link :to="`/board/list/${item.uid}`">
+                <v-avatar size="36" color="grey lighten-3">
+                  <img v-if="item.photoURL" :src="item.photoURL" alt="avatar" />
+                  <v-icon v-else>mdi-account</v-icon>
+                </v-avatar>
+                <span class="writer green--text">{{ item.email }}</span>
+              </router-link>-->
             </div>
+
+            <div class="post-title-container">
+              <!-- <span class="body-2 writer green--text">{{ firstname }}</span> -->
+              <span class="body-2 writer green--text">{{ item.email }}</span>
+              <br />
+              <h2 class="post-title">
+                <router-link :to="`/board/post/${item.id}`" class="black--text">
+                  {{ item.title }}
+                  <!-- <br />아아아 -->
+                </router-link>
+              </h2>
+            </div>
+            <div class="date grey--text">{{ item.createdAt }}</div>
           </v-card-title>
           <v-divider class="mx-4"></v-divider>
           <v-card-text class="pt-6">
@@ -59,6 +71,8 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
+import { getHelper } from "../../mixins/getHelper";
+
 export default {
   data() {
     return {
@@ -66,28 +80,20 @@ export default {
       // boardList: ""
     };
   },
+  mixins: [getHelper],
   computed: {
-    ...mapGetters(["getBoardList"])
+    ...mapGetters(["getUserBoardList"])
   },
   methods: {
     ...mapMutations(["SET_IS_EMAIL_SEND"]),
-    ...mapActions(["FETCH_BOARD_LIST"])
+    ...mapActions(["FETCH_BOARD_LIST", "FETCH_USER_LIST"])
   },
   created() {
     // this.$store.commit('SET_IS_EMAIL_SEND', false);
     this.SET_IS_EMAIL_SEND(false);
-    this.FETCH_BOARD_LIST();
-    this.$nextTick(() => {
-      console.log(this.getBoardList[0].photoURL);
-      console.log(this.$store.state.user.photoURL);
-      this.getBoardList[0].photoURL = this.$store.state.user.photoURL;
+    this.FETCH_USER_LIST().then(() => {
+      this.FETCH_BOARD_LIST().then(() => {});
     });
-    // this.$store.dispatch("FETCH_BOARD_LIST").then(() => {
-    //   console.log(this.getBoardList);
-    // });
-    // this.FETCH_BOARD_LIST().then(() => {
-    //   console.log(this.getBoardList);
-    // });
   }
 };
 </script>
@@ -107,9 +113,21 @@ export default {
 }
 .post-card {
   height: 495px;
-  overflow: hidden;
+  .thumbnail-container {
+    overflow: hidden;
+  }
   .post-title-wrapper {
-    height: 110px;
+    position: relative;
+    display: block;
+    height: 135px;
+    .board-avatar {
+      position: absolute;
+      top: -25px;
+      right: 10px;
+      background-color: #fff;
+      border: 5px solid #fff;
+      border-radius: 50%;
+    }
     .post-writer {
       display: block;
       font-size: 13px;
@@ -118,9 +136,13 @@ export default {
         margin-left: 10px;
       }
     }
-    .post-title {
+    .post-title-container {
       margin-top: 3px;
-      line-height: 1.3;
+      .post-title {
+        font-size: 20px;
+        line-height: 1.3;
+        font-weight: 500;
+      }
     }
     .date {
       font-size: 13px;

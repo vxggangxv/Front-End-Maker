@@ -70,7 +70,7 @@ var editorOption = {
     // ],
     handlers: {
      'image': function(){
-       console.log('hi');
+       console.log('img handler work');
         document.getElementById('getFile').click()
      }
     }
