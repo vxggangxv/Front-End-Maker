@@ -109,7 +109,7 @@ const waitFirebase = () => {
 	return new Promise((resolve, reject) => {
 		let cnt = 0;
 		const tmr = setInterval(() => {
-			if (store.state.firebaseLoaded) {
+			if (store.state.isFirebaseLoaded) {
 				clearInterval(tmr);
 				resolve();
 			} else if (cnt++ > 500)
@@ -125,7 +125,8 @@ router.beforeEach((to, from, next) => {
 	// } else next()
 	waitFirebase()
 		.then(() => next())
-		.catch(e => Vue.prototype.$toasted.global.error(e.message));
+  	.catch(e => Vue.prototype.$toasted.global.error(e.message));
+  // next();
 });
 
 router.afterEach((to, from) => {

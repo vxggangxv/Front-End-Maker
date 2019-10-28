@@ -1,8 +1,8 @@
 const state = {
-		drawer: null,
-		emailSend: false,
-		emailVerified: false,
-		firebaseLoaded: false,
+		isDrawer: null,
+		isEmailSend: false,
+		isEmailVerified: false,
+		isFirebaseLoaded: false,
 		user: null,
 		userList: [],
 		avatarLoading: false,

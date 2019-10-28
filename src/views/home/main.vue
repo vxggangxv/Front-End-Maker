@@ -5,7 +5,7 @@
       <v-col v-for="item in getUserBoardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
         <v-card class="post-card">
           <div class="thumbnail-container" v-if="item.titleImg">
-            <router-link :to="`/board/list/${item.id}`" class="black--text">
+            <router-link :to="`/board/post/${item.id}`" class="black--text">
               <figure v-html="item.titleImg"></figure>
             </router-link>
             <!-- <v-btn v-if="!$store.state.user" @click="goSignIn" color="white" depressed>로그인</v-btn>

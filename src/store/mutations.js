@@ -1,15 +1,15 @@
 const mutations = {
   SET_IS_DRAWER(state, toggle) {
-    state.drawer = toggle;
+    state.isDrawer = toggle;
   },
   SET_IS_EMAIL_SEND(state, toggle) {
-    state.emailSend = toggle;
+    state.isEmailSend = toggle;
   },
   SET_IS_EMAIL_VERIFIED(state, toggle) {
-    state.emailVerified = toggle;
+    state.isEmailVerified = toggle;
   },
   SET_IS_FIREBASE_LOADED(state, toggle) {
-    state.firebaseLoaded = toggle;
+    state.isFirebaseLoaded = toggle;
   },
   SET_IS_AVATAR_LOADING(state, toggle) {
     state.avatarLoading = toggle;

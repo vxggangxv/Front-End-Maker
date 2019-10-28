@@ -1,6 +1,6 @@
 <template>
   <!-- <v-navigation-drawer class="whtie" v-model="$store.state.drawer" :clipped="$vuetify.breakpoint.lgAndUp" app> -->
-  <v-navigation-drawer class="whtie" width="240" v-model="$store.state.drawer" app>
+  <v-navigation-drawer class="whtie" width="240" v-model="$store.state.isDrawer" app>
     <v-container class="px-5">
       <v-row>
         <v-col cols="12">
