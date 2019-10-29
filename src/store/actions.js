@@ -57,7 +57,7 @@ const actions = {
 
     // console.log(items);
     
-    commit('SET_USER_LIST', items);
+    return commit('SET_USER_LIST', items);
   },
   async FETCH_USER({ commit }, uid) {
     // const user = Vue.prototype.$firebase.auth().currentUser;
@@ -67,7 +67,7 @@ const actions = {
       item = snapshot.data();
       item.id = uid;
 
-    commit('SET_USER', item);
+    return commit('SET_USER', item);
   },
   async UPDATE_USER({ dispatch }, { uid, updatedAt, displayName, aboutMe, github, homepage }) {
     await Vue.prototype.$firebase.auth().currentUser.updateProfile({ displayName });
@@ -76,7 +76,7 @@ const actions = {
       .doc(uid)
       .set({ updatedAt, displayName, aboutMe, social: {github, homepage} }, { merge: true });
 
-      dispatch('FETCH_USER', uid);
+      return dispatch('FETCH_USER', uid);
     // commit('SET_USER', user);
     // console.log(user);
   },
@@ -134,6 +134,12 @@ const actions = {
             .collection("user")
             .doc(uid)
             .update({ updatedAt, photoURL });
+
+          dispatch('FETCH_BOARD_LIST').then(() => {
+            state.boardList.forEach(item => {
+              if (item.uid === uid) dispatch('UPDATE_BOARD_PHOTOURL', { id: item.id, photoURL, updatedAt })
+            })
+          });
 
           dispatch('FETCH_USER', uid);
           state.avatarLoading = false;
@@ -209,10 +215,24 @@ const actions = {
       item = snapshot.data();
       item.id = id;
       
-      commit('SET_BOARD', item);
+      return commit('SET_BOARD', item);
     } catch (error) {
       console.log(error.message);
     }
+  },
+  UPDATE_BOARD_PHOTOURL({ dispatch }, { id, photoURL, updatedAt }) {
+    Vue.prototype.$firebase
+      .firestore()
+      .collection('board')
+      .doc(id)
+      .update({
+        photoURL,
+        updatedAt
+      }).then(() => {
+        dispatch('FETCH_BOARD', id);
+      }).catch(error => {
+        console.log(error);
+      });
   },
   UPDATE_BOARD({ dispatch }, { id, title, content, titleImg, summary, email, uid, photoURL, updatedAt }) {
     Vue.prototype.$firebase
@@ -298,7 +318,7 @@ const actions = {
       items.push(item);
     });
 
-    commit('SET_BOARD_LIST', items);
+    return commit('SET_BOARD_LIST', items);
   },
   // async visitUser ({ state }) {
   //   if (!state.user.displayName) return false

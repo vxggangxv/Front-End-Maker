@@ -55,7 +55,7 @@ export default {
     ...mapMutations(["SET_IS_DRAWER"])
   },
   created() {
-    console.log(this.$store.state.isDrawer);
+    // console.log(this.$store.state.isDrawer);
   }
 };
 </script>

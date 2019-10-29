@@ -22,7 +22,7 @@
               >
                 <div class="mt-3">
                   <template v-if="!boardUser.displayName">
-                    <div class="blue--text">{{ firstName }}</div>
+                    <div class="blue--text">{{ boardUser.firstName }}</div>
                   </template>
                   <template v-else>
                     <span class="blue--text">@{{ boardUser.displayName }}</span>
@@ -55,19 +55,24 @@
                     <v-divider class="mx-4"></v-divider>
                     <v-card-text class="mb-n3">
                       {{ item.createdAt }} 작성
-                      <template
-                        v-if="$store.state.user.uid === boardUser.uid"
-                      >
-                        <span class="float-right">
-                          <v-btn color="primary" @click.prevent="goEdit(item.id)" small outlined>수정</v-btn>
-                          <v-btn
-                            class="ml-2"
-                            color="error"
-                            @click.prevent="del(item.id)"
-                            small
-                            outlined
-                          >삭제</v-btn>
-                        </span>
+                      <template v-if="$store.state.user">
+                        <template v-if="$store.state.user.uid === boardUser.uid">
+                          <span class="float-right">
+                            <v-btn
+                              color="primary"
+                              @click.prevent="goEdit(item.id)"
+                              small
+                              outlined
+                            >수정</v-btn>
+                            <v-btn
+                              class="ml-2"
+                              color="error"
+                              @click.prevent="del(item.id)"
+                              small
+                              outlined
+                            >삭제</v-btn>
+                          </span>
+                        </template>
                       </template>
                     </v-card-text>
                     <v-card-actions></v-card-actions>
@@ -137,7 +142,8 @@ export default {
     // this.FETCH_BOARD_USER(this.uid);
     this.FETCH_BOARD_USER(this.uid).then(() => {
       // console.log(this.boardUser);
-      this.firstName = "@" + this.getFirstEmailName(this.boardUser.email);
+      this.boardUser.firstName =
+        "@" + this.getFirstEmailName(this.boardUser.email);
     });
   }
 };

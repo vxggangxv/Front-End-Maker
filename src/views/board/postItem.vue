@@ -10,8 +10,8 @@
             <v-row>
               <v-col cols="2" sm="1">
                 <v-avatar size="62" color="grey lighten-4">
-                  <v-icon v-if="!getUserBoard.photoURL" size="50">mdi-account</v-icon>
-                  <img v-else :src="getUserBoard.photoURL" alt="avatar" />
+                  <v-icon v-if="!boardUser.photoURL" size="50">mdi-account</v-icon>
+                  <img v-else :src="boardUser.photoURL" alt="avatar" />
                 </v-avatar>
               </v-col>
               <v-col
@@ -20,13 +20,11 @@
                 cols="10"
                 sm="11"
               >
-                <template v-if="getUserBoard">
-                  <template v-if="getUserBoard.displayName">
-                    <span>@{{ getUserBoard.displayName }}</span>
-                  </template>
-                  <template v-else>
-                    <span>{{ firstName }}</span>
-                  </template>
+                <template v-if="boardUser.displayName">
+                  <span>@{{ boardUser.displayName }}</span>
+                </template>
+                <template v-else>
+                  <span>{{ boardUser.firstName }}</span>
                 </template>
               </v-col>
             </v-row>
@@ -37,13 +35,12 @@
                   <v-divider></v-divider>
                   <v-card-text class="px-0">
                     <div class="float-right">
-                      <router-link
-                        class="body-2 grey--text"
-                        :to="`/board/list/${getUserBoard.uid}`"
-                      >목록보기</router-link>
-                      <template v-if="$store.state.user.uid === getUserBoard.uid">
-                        <router-link class="ml-2 body-2 grey--text" :to="`/board/edit/${bid}`">수정</router-link>
-                        <a class="ml-2 body-2 grey--text" @click.prevent="del()">삭제</a>
+                      <router-link class="body-2 grey--text" :to="`/board/list/${board.uid}`">목록보기</router-link>
+                      <template v-if="$store.state.user">
+                        <template v-if="$store.state.user.uid === board.uid">
+                          <router-link class="ml-2 body-2 grey--text" :to="`/board/edit/${bid}`">수정</router-link>
+                          <a class="ml-2 body-2 grey--text" @click.prevent="del()">삭제</a>
+                        </template>
                       </template>
                     </div>
                   </v-card-text>
@@ -96,13 +93,13 @@ export default {
     BoardBar
   },
   computed: {
-    ...mapState(["boardList", "board"]),
-    ...mapGetters(["getUserBoard"]),
+    ...mapState(["boardList", "board", "boardUser"]),
+    // ...mapGetters(["getBoard"]),
     title() {
-      return this.getUserBoard.title;
+      return this.board.title;
     },
     content() {
-      return this.getUserBoard.content;
+      return this.board.content;
     }
   },
   methods: {
@@ -110,6 +107,7 @@ export default {
       "FETCH_USER_LIST",
       "FETCH_BOARD",
       "DELETE_BOARD",
+      "FETCH_BOARD_USER",
       "FETCH_BOARD_LIST"
     ]),
     del() {
@@ -124,15 +122,14 @@ export default {
       this.$router.push(`/board/list/${id}`);
     }
   },
-  created() {
+  async created() {
     this.bid = this.$route.params.id;
-    this.FETCH_USER_LIST()
-      .then(() => {
-        this.FETCH_BOARD(this.bid);
-      })
-      .then(() => {
-        this.firstName = "@" + this.getFirstEmailName(this.getUserBoard.email);
-      });
+    await this.FETCH_BOARD(this.bid);
+    await this.FETCH_BOARD_USER(this.board.uid);
+    this.boardUser.firstName =
+      "@" + this.getFirstEmailName(this.boardUser.email);
+
+    // console.log(this.getBoard);
 
     // await this.$store.dispatch("FETCH_BOARD_LIST");
     // await this.FETCH_BOARD_LIST;

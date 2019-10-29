@@ -2,7 +2,7 @@
   <v-container fluid>
     <div class="title">최신 Article</div>
     <v-row>
-      <v-col v-for="item in getUserBoardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
+      <v-col v-for="item in getBoardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
         <v-card class="post-card">
           <div class="thumbnail-container" v-if="item.titleImg">
             <router-link :to="`/board/post/${item.id}`" class="black--text">
@@ -82,18 +82,16 @@ export default {
   },
   mixins: [getHelper],
   computed: {
-    ...mapGetters(["getUserBoardList"])
+    ...mapGetters(["getBoardList"])
   },
   methods: {
     ...mapMutations(["SET_IS_EMAIL_SEND"]),
     ...mapActions(["FETCH_BOARD_LIST", "FETCH_USER_LIST"])
   },
-  created() {
+  async created() {
     // this.$store.commit('SET_IS_EMAIL_SEND', false);
     this.SET_IS_EMAIL_SEND(false);
-    this.FETCH_USER_LIST().then(() => {
-      this.FETCH_BOARD_LIST().then(() => {});
-    });
+    await this.FETCH_BOARD_LIST();
   }
 };
 </script>

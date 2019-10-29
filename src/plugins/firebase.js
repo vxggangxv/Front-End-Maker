@@ -35,10 +35,10 @@ firebase.auth().onAuthStateChanged(async user => {
 		// 		visitedAt: new Date(),
 		// 		visitCount: increment,
 		// 	});
-    store.dispatch('FETCH_USER', user.uid)
 	}
   store.commit('SET_IS_FIREBASE_LOADED', true);
-  // store.commit('SET_USER', user);
+  store.commit('SET_USER', user);
+  // store.dispatch('FETCH_USER', { id: user.uid })
 
 	// console.log(user);
 });
