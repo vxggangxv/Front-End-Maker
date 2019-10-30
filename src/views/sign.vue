@@ -17,7 +17,7 @@
       <v-row>
         <v-card width="315" class="mx-auto">
           <v-card-text>
-            <sign-Finish v-if="$store.state.emailSend"></sign-Finish>
+            <sign-Finish v-if="$store.state.isEmailSend"></sign-Finish>
             <sign-in v-else></sign-in>
             <!-- <template v-if="$store.state.user">
               <finish-sign v-if="$store.state.user.emailVerified"></finish-sign>

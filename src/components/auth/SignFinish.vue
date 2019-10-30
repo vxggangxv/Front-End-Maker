@@ -1,6 +1,6 @@
 <template>
   <v-card flat>
-    <v-card-text v-if="!$store.state.emailVerified" class="px-2">
+    <v-card-text v-if="!$store.state.isEmailVerified" class="px-2">
       로그인 링크가 이메일로 전송되었습니다.
       <br />이메일의 링크를 통하여 로그인을 계속하세요.
     </v-card-text>
@@ -13,8 +13,8 @@
 <script>
 export default {
   data() {
-    return {}
+    return {};
   },
   methods: {}
-}
+};
 </script>
