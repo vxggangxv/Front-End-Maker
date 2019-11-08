@@ -72,6 +72,7 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { getHelper } from "../../mixins/getHelper";
+import bus from "../../utils/bus.js";
 
 export default {
   data() {
@@ -89,9 +90,11 @@ export default {
     ...mapActions(["FETCH_BOARD_LIST", "FETCH_USER_LIST"])
   },
   async created() {
+    bus.$emit("on:progress");
     // this.$store.commit('SET_IS_EMAIL_SEND', false);
     this.SET_IS_EMAIL_SEND(false);
     await this.FETCH_BOARD_LIST();
+    bus.$emit("off:progress");
   }
 };
 </script>

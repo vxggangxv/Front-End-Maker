@@ -1,12 +1,35 @@
 <template>
   <div id="app" class="app">
-    <router-view></router-view>
+    <spinner :loading="loading"></spinner>
+    <router-view @on:progress="onProgress" @off:progress="offProgress"></router-view>
   </div>
 </template>
 
 <script>
+import Spinner from "./components/Spinner.vue";
+import bus from "./utils/bus.js";
+
 export default {
-  components: {}
+  components: {
+    Spinner
+  },
+  data() {
+    return {
+      loading: false
+    };
+  },
+  methods: {
+    onProgress() {
+      this.loading = true;
+    },
+    offProgress() {
+      this.loading = false;
+    }
+  },
+  created() {
+    bus.$on("on:progress", this.onProgress);
+    bus.$on("off:progress", this.offProgress);
+  }
 };
 </script>
 <style lang="scss">

@@ -43,6 +43,7 @@
 import SignIn from "@/components/auth/SignIn.vue";
 import SignFinish from "@/components/auth/SignFinish.vue";
 import { mapMutations } from "vuex";
+import bus from "../utils/bus.js";
 
 export default {
   components: {
@@ -66,6 +67,7 @@ export default {
       // the sign-in operation.
       // Get the email if available. This should be available if the user completes
       // the flow on the same device where they started it.
+      bus.$emit("on:progress");
       var email = window.localStorage.getItem("emailForSignIn");
       if (!email) {
         // User opened the link on a different device. To prevent session fixation
@@ -86,15 +88,11 @@ export default {
         // console.log("success");
         this.SET_IS_EMAIL_SEND(true);
         this.SET_IS_EMAIL_VERIFIED(true);
-
         const user = this.$firebase.auth().currentUser;
-        const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(
-          1
-        );
+        const db = this.$firebase.firestore();
+        const increment = this.$firebase.firestore.FieldValue.increment(1);
 
-        this.$firebase
-          .firestore()
-          .collection("user")
+        db.collection("user")
           .doc(user.uid)
           .get()
           .then(r => {
@@ -106,9 +104,11 @@ export default {
                 visitCount: increment
               });
           });
+
+        bus.$emit("off:progress");
+        this.$router.push("/");
         // console.log(this.$store.state.emailSend);
         // console.log(this.$store.state.emailVerified);
-        // this.$router.push("/");
       } catch (error) {
         console.log(error.message);
         // Some error occurred, you can inspect the code: error.code
