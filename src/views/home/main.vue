@@ -2,7 +2,14 @@
   <v-container fluid>
     <div class="title">최신 Article</div>
     <v-row>
-      <v-col v-for="item in getBoardList" :key="item.id" cols="12" sm="6" md="4" lg="3">
+      <v-col
+        v-for="item in boardUserList"
+        :key="item.id"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+      >
         <v-card class="post-card">
           <div class="thumbnail-container" v-if="item.titleImg">
             <router-link :to="`/board/post/${item.id}`" class="black--text">
@@ -70,7 +77,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 import { getHelper } from "../../mixins/getHelper";
 import bus from "../../utils/bus.js";
 
@@ -83,17 +90,25 @@ export default {
   },
   mixins: [getHelper],
   computed: {
+    ...mapState(["boardUserList"]),
     ...mapGetters(["getBoardList"])
   },
   methods: {
     ...mapMutations(["SET_IS_EMAIL_SEND"]),
-    ...mapActions(["FETCH_BOARD_LIST", "FETCH_USER_LIST"])
+    ...mapActions([
+      "FETCH_BOARD_LIST",
+      "FETCH_USER_LIST",
+      "FETCH_BOARD_USER_LIST"
+    ])
   },
   async created() {
     bus.$emit("on:progress");
     // this.$store.commit('SET_IS_EMAIL_SEND', false);
     this.SET_IS_EMAIL_SEND(false);
     await this.FETCH_BOARD_LIST();
+    await this.FETCH_BOARD_USER_LIST().then(data => {
+      // console.log(data);
+    });
     bus.$emit("off:progress");
   }
 };

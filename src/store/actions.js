@@ -301,6 +301,44 @@ const actions = {
       console.log(error.message);
     }
   },
+  async FETCH_BOARD_USER_LIST({ commit }) {
+    let boardItem = {};
+    let boardList = [];
+    const boardSnapshot = await Vue.prototype.$firebase
+      .firestore()
+      .collection('board')
+      .orderBy('createdAt', 'desc')
+      .orderBy('title')
+      .get();
+    boardSnapshot.forEach((doc) => {
+      // console.log(`${doc.id} => ${doc.data()}`);
+      boardItem = doc.data();
+      boardItem.id = doc.id;
+      boardList.push(boardItem);
+    });
+
+    let userItem = {};
+    let userList = [];
+    const userSnapshot = await Vue.prototype.$firebase
+      .firestore()
+      .collection('user').
+      get();
+    userSnapshot.forEach((doc) => {
+      // console.log(`${doc.id} => ${doc.data()}`);
+      userItem = doc.data();
+      userItem.id = doc.id;
+      userList.push(userItem);
+    });
+
+    // console.log('hi');
+    boardList.forEach( bItem => {
+      userList.forEach( uItem => {
+        if (bItem.uid === uItem.id) bItem.photoURL = uItem.photoURL;
+      });
+    });
+    // return boardList;
+    return commit('SET_BOARD_USER_LIST', boardList);
+  },
   async SEARCH_BOARD_LIST({ commit }, title) {
     // let titleList = [];
     // titleList.push(title);

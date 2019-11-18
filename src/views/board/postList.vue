@@ -142,8 +142,9 @@ export default {
     // this.FETCH_BOARD_USER(this.uid);
     this.FETCH_BOARD_USER(this.uid).then(() => {
       // console.log(this.boardUser);
-      this.boardUser.firstName =
-        "@" + this.getFirstEmailName(this.boardUser.email);
+      if (this.boardUser.email)
+        return (this.boardUser.firstName =
+          "@" + this.getFirstEmailName(this.boardUser.email));
     });
   }
 };

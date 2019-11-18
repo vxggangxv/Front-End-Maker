@@ -8,6 +8,7 @@ const state = {
 		avatarLoading: false,
 		boardUser: null,
 		boardList: [],
+		boardUserList: [],
 		board: {},
 		searchTitle: '',
 		searchList: [],

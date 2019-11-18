@@ -26,6 +26,9 @@ const mutations = {
   SET_BOARD_LIST(state, boardList) {
     state.boardList = boardList;
   },
+  SET_BOARD_USER_LIST(state, boardUserList) {
+    state.boardUserList = boardUserList;
+  },
   SET_BOARD(state, board) {
     state.board = board;
   },
