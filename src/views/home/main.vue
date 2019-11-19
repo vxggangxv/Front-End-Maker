@@ -2,14 +2,7 @@
   <v-container fluid>
     <div class="title">최신 Article</div>
     <v-row>
-      <v-col
-        v-for="item in boardUserList"
-        :key="item.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
+      <v-col v-for="item in boardUserList" :key="item.id" cols="12" sm="6" md="4" lg="3">
         <v-card class="post-card">
           <div class="thumbnail-container" v-if="item.titleImg">
             <router-link :to="`/board/post/${item.id}`" class="black--text">
@@ -129,6 +122,7 @@ export default {
 }
 .post-card {
   height: 495px;
+  margin-top: 25px;
   .thumbnail-container {
     overflow: hidden;
   }

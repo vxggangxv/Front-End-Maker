@@ -1,5 +1,6 @@
 <template>
   <div class="lds-facebook" v-if="loading">
+    <!-- <div class="lds-facebook"> -->
     <div></div>
     <div></div>
     <div></div>
@@ -18,14 +19,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$lt: 10px;
+$wd: 12px;
+$ht: 62px;
 .lds-facebook {
   z-index: 1000;
   display: inline-block;
   position: absolute;
-  width: 64px;
-  height: 64px;
-  top: 47%;
-  left: 47%;
+  width: ($lt * 4) + ($wd * 3);
+  height: $ht;
+  top: 50%;
+  left: 50%;
+  margin-top: -(($lt * 4) + ($wd * 3) / 2);
+  margin-left: -($ht / 2);
+  text-align: center;
   &:before {
     content: "";
     display: block;
@@ -40,31 +47,30 @@ export default {
 .lds-facebook div {
   display: inline-block;
   position: absolute;
-  left: 6px;
-  width: 13px;
+  width: $wd;
   background: #42b883;
   animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
 .lds-facebook div:nth-child(1) {
-  left: 6px;
+  left: $lt;
   animation-delay: -0.24s;
 }
 .lds-facebook div:nth-child(2) {
-  left: 26px;
+  left: ($lt * 2) + $wd;
   animation-delay: -0.12s;
 }
 .lds-facebook div:nth-child(3) {
-  left: 45px;
+  left: ($lt * 3) + ($wd * 2);
   animation-delay: 0;
 }
 @keyframes lds-facebook {
   0% {
     top: 6px;
-    height: 51px;
+    height: 50px;
   }
   50%,
   100% {
-    top: 19px;
+    top: 18px;
     height: 26px;
   }
 }

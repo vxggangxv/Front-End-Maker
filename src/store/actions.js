@@ -5,27 +5,43 @@ const actions = {
     const provider = new Vue.prototype.$firebase.auth.GoogleAuthProvider();
     const auth = Vue.prototype.$firebase.auth();
     auth.languageCode = 'ko';
-    await auth.signInWithPopup(provider);
+    const result = await auth.signInWithPopup(provider);
+
+    // console.log(result.user);
+    
+    // firebase.auth().signInWithPopup(provider).then(function(result) {
+    //   // This gives you a Google Access Token. You can use it to access the Google API.
+    //   var token = result.credential.accessToken;
+    //   // The signed-in user info.
+    //   var user = result.user;
+    //   // ...
+    // }).catch(function(error) {
+    //   // Handle Errors here.
+    //   var errorCode = error.code;
+    //   var errorMessage = error.message;
+    //   // The email of the user's account used.
+    //   var email = error.email;
+    //   // The firebase.auth.AuthCredential type that was used.
+    //   var credential = error.credential;
+    //   // ...
+    // });
 
     const db = Vue.prototype.$firebase.firestore();
-    const user = auth.currentUser;
-    const { uid } = user;
     
     const increment = Vue.prototype.$firebase.firestore.FieldValue.increment(1);
 
-    db.collection('user').doc(uid).get().then(r => {
-      if (!r.exists) return user.updateProfile({ displayName: null });
-      console.log(r);
-      db.collection('user').doc(uid)
-        .update({
-          visitedAt: new Date(),
-          visitCount: increment,
-        });
-
-      })
-      .then(() => {
-        dispatch('FETCH_USER', uid);
+    db.collection('user').doc(result.user.uid).get().then(r => {
+      if (!r.exists) return result.user.updateProfile({ displayName: null });
+        // console.log(r);
+        db.collection('user').doc(result.user.uid)
+          .update({
+            visitedAt: new Date(),
+            visitCount: increment,
+          });
       });
+      // .then(() => {
+      //   dispatch('FETCH_USER', result.user.uid);
+      // });
   },
   async SIGN_IN_WITH_EMAIL_LINK({ commit }, email) {
     var actionCodeSettings = {
@@ -332,6 +348,7 @@ const actions = {
 
     // console.log('hi');
     boardList.forEach( bItem => {
+      bItem.createdAt = bItem.createdAt.substr(0, 10);
       userList.forEach( uItem => {
         if (bItem.uid === uItem.id) bItem.photoURL = uItem.photoURL;
       });

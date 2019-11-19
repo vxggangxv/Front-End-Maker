@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="app">
     <spinner :loading="loading"></spinner>
+    <!-- <spinner></spinner> -->
     <router-view @on:progress="onProgress" @off:progress="offProgress"></router-view>
   </div>
 </template>

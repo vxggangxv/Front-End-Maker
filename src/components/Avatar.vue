@@ -2,13 +2,18 @@
   <div>
     <v-menu left offset-y>
       <template v-slot:activator="{ on }">
-        <v-btn v-if="!$store.state.user" @click="goSignIn" color="white" depressed>로그인</v-btn>
-        <v-btn v-else icon v-on="on" class="avatar-btn">
-          <v-avatar size="36" color="white">
-            <img v-if="$store.state.user.photoURL" :src="$store.state.user.photoURL" alt="avatar" />
-            <v-icon v-else>mdi-account</v-icon>
-          </v-avatar>
-        </v-btn>
+        <template v-if="!$store.state.user">
+          <v-btn v-if="path === '/home/main'" @click="goSignIn" color="white" depressed>로그인</v-btn>
+          <v-btn v-else @click="goSignIn" color="grey lighten-1" dark depressed>로그인</v-btn>
+        </template>
+        <template v-else>
+          <v-btn icon v-on="on" class="avatar-btn">
+            <v-avatar size="36" color="white">
+              <img v-if="$store.state.user.photoURL" :src="$store.state.user.photoURL" alt="avatar" />
+              <v-icon v-else>mdi-account</v-icon>
+            </v-avatar>
+          </v-btn>
+        </template>
       </template>
 
       <v-list v-if="$store.state.user" class="pa-0 body-2" dense flat>
@@ -48,9 +53,10 @@ export default {
       this.$router.push("/sign");
     }
   },
-  mounted() {
+  created() {
     // console.log(this.$route.path);
     this.path = this.$route.path;
+    // console.log(this.path);
   }
 };
 </script>

@@ -97,6 +97,7 @@
 import { mapState, mapGetters, mapActions } from "vuex";
 import { getHelper } from "../../mixins/getHelper";
 import BoardBar from "../../components/BoardBar.vue";
+import bus from "../../utils/bus.js";
 
 export default {
   data() {
@@ -135,17 +136,19 @@ export default {
       this.FETCH_USER_BOARD_LIST(uid);
     }
   },
-  created() {
+  async created() {
+    bus.$emit("on:progress");
     this.uid = this.$route.params.id;
     this.getList(this.uid);
     // console.log(this.uid);
     // this.FETCH_BOARD_USER(this.uid);
-    this.FETCH_BOARD_USER(this.uid).then(() => {
+    await this.FETCH_BOARD_USER(this.uid).then(() => {
       // console.log(this.boardUser);
       if (this.boardUser.email)
         return (this.boardUser.firstName =
           "@" + this.getFirstEmailName(this.boardUser.email));
     });
+    bus.$emit("off:progress");
   }
 };
 </script>

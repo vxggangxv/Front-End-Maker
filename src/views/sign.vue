@@ -75,11 +75,11 @@ export default {
         email = window.prompt("Please provide your email for confirmation");
       }
       try {
-        await this.$firebase
+        const result = await this.$firebase
           .auth()
           .signInWithEmailLink(email, window.location.href);
         // Clear email from storage.
-        await window.localStorage.removeItem("emailForSignIn");
+        window.localStorage.removeItem("emailForSignIn");
         // You can access the new user via result.user
         // Additional user info profile not available via:
         // result.additionalUserInfo.profile == null
@@ -88,17 +88,18 @@ export default {
         // console.log("success");
         this.SET_IS_EMAIL_SEND(true);
         this.SET_IS_EMAIL_VERIFIED(true);
-        const user = this.$firebase.auth().currentUser;
         const db = this.$firebase.firestore();
         const increment = this.$firebase.firestore.FieldValue.increment(1);
 
         db.collection("user")
-          .doc(user.uid)
+          .doc(result.user.uid)
           .get()
           .then(r => {
-            if (!r.exists) return user.updateProfile({ displayName: null });
+            if (!r.exists)
+              return result.user.updateProfile({ displayName: null });
+            // console.log(r);
             db.collection("user")
-              .doc(user.uid)
+              .doc(result.user.uid)
               .update({
                 visitedAt: new Date(),
                 visitCount: increment

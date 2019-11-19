@@ -29,7 +29,7 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
 
   let emailName = email
   // level0 = admin
-  level0Email = ['toxnsldxn@gmail.com']
+  let level0Email = ['toxnsldxn@gmail.com']
   let set = {
     level: 2
   }
