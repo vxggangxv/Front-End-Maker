@@ -1,11 +1,12 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 
-admin.initializeApp({
-  credential: admin.credential.cert(require('./key.json'))
+const app = admin.initializeApp({
+  credential: admin.credential.cert(require('./key.json')),
+  databaseURL: 'https://front-end-maker.firebaseio.com'
 })
 
-const db = admin.firestore()
+const db = app.firestore()
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -17,8 +18,8 @@ const db = admin.firestore()
 // });
 
 // exports.test = functions.region('asia-east2').https.onRequest(require('./test'))
-exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (user) => {
-  const {
+exports.createUser = functions.auth.user().onCreate( async(user) => {
+  let {
     uid,
     email,
     displayName,
@@ -28,7 +29,6 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
   } = user
 
   let emailName = email
-  // level0 = admin
   let level0Email = ['toxnsldxn@gmail.com']
   let set = {
     level: 2
@@ -48,11 +48,12 @@ exports.createUser = functions.region('asia-east2').auth.user().onCreate(async (
     visitedAt: new Date(),
     visitCount: 0
   }
+
   const r = await db.collection('user').doc(uid).set(d)
   return r
 })
 
-exports.deleteUser = functions.region('asia-east2').auth.user().onDelete((user) => {
+exports.deleteUser = functions.auth.user().onDelete( (user) => {
   return db.collection('user').doc(user.uid).delete()
 })
 

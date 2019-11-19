@@ -33,12 +33,14 @@ const actions = {
     db.collection('user').doc(result.user.uid).get().then(r => {
       if (!r.exists) return result.user.updateProfile({ displayName: null });
         // console.log(r);
+      if (r.exists) {
         db.collection('user').doc(result.user.uid)
           .update({
             visitedAt: new Date(),
             visitCount: increment,
           });
-      });
+      }
+    });
       // .then(() => {
       //   dispatch('FETCH_USER', result.user.uid);
       // });
@@ -165,7 +167,7 @@ const actions = {
 
 
   },
-  async CREATE_BOARD(_, { title, content, titleImg, summary, email, uid, photoURL, createdAt, updatedAt}) {
+  async CREATE_BOARD(_, { title, content, titleImg, summary, email, uid, createdAt, updatedAt}) {
     const docRef = await Vue.prototype.$firebase
       .firestore()
       .collection('board')
@@ -176,7 +178,6 @@ const actions = {
         summary,
         email,
         uid,
-        photoURL,
         createdAt,
         updatedAt,
       });
@@ -250,7 +251,7 @@ const actions = {
         console.log(error);
       });
   },
-  UPDATE_BOARD({ dispatch }, { id, title, content, titleImg, summary, email, uid, photoURL, updatedAt }) {
+  UPDATE_BOARD({ dispatch }, { id, title, content, titleImg, summary, email, uid, updatedAt }) {
     Vue.prototype.$firebase
       .firestore()
       .collection('board')
@@ -262,7 +263,6 @@ const actions = {
         summary,
         email,
         uid,
-        photoURL,
         updatedAt
       }, { merge: true } ).then(() => {
         dispatch('FETCH_BOARD', id);

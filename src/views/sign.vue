@@ -3,8 +3,16 @@
     <v-container fluid>
       <v-row class="mt-5" no-gutters>
         <v-spacer></v-spacer>
-        <v-btn class="pa-0 mr-5 ml-n1 mt-3" color="transparent" to="/" depressed rounded>
-          <v-icon class="app-logo-comm app-logo-icon mr-1">mdi-account-supervisor-circle</v-icon>
+        <v-btn
+          class="pa-0 mr-5 ml-n1 mt-3"
+          color="transparent"
+          to="/"
+          depressed
+          rounded
+        >
+          <v-icon class="app-logo-comm app-logo-icon mr-1"
+            >mdi-account-supervisor-circle</v-icon
+          >
           <span class="app-logo-comm app-logo">FEM</span>
         </v-btn>
         <v-spacer></v-spacer>
@@ -98,12 +106,14 @@ export default {
             if (!r.exists)
               return result.user.updateProfile({ displayName: null });
             // console.log(r);
-            db.collection("user")
-              .doc(result.user.uid)
-              .update({
-                visitedAt: new Date(),
-                visitCount: increment
-              });
+            if (r.exists) {
+              db.collection("user")
+                .doc(result.user.uid)
+                .update({
+                  visitedAt: new Date(),
+                  visitCount: increment
+                });
+            }
           });
 
         bus.$emit("off:progress");

@@ -87,7 +87,6 @@ export default {
       let summary = null;
       let uid = this.$store.state.user.uid;
       let email = this.$store.state.user.email;
-      let photoURL = this.$store.state.user.photoURL;
       let tmpContent = "";
       let n = 0;
       let n2 = 0;
@@ -115,7 +114,6 @@ export default {
         summary,
         email,
         uid,
-        photoURL,
         updatedAt
       })
         .then(() => {

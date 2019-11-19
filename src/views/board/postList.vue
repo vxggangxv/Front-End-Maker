@@ -9,8 +9,13 @@
           <v-col sm="12" md="9" lg="7" xl="5">
             <v-row>
               <v-col cols="12" sm="3">
-                <v-avatar :size="$vuetify.breakpoint.xlOnly ? 160 : 150" color="grey lighten-4">
-                  <v-icon v-if="!boardUser.photoURL" size="125">mdi-account</v-icon>
+                <v-avatar
+                  :size="$vuetify.breakpoint.xlOnly ? 160 : 150"
+                  color="grey lighten-4"
+                >
+                  <v-icon v-if="!boardUser.photoURL" size="125"
+                    >mdi-account</v-icon
+                  >
                   <img v-else :src="boardUser.photoURL" alt="avatar" />
                 </v-avatar>
               </v-col>
@@ -21,33 +26,41 @@
                 sm="9"
               >
                 <div class="mt-3">
-                  <template v-if="!boardUser.displayName">
-                    <div class="blue--text">{{ boardUser.firstName }}</div>
+                  <template v-if="boardUser.displayName">
+                    <span class="blue--text">@{{ boardUser.displayName }}</span>
                   </template>
                   <template v-else>
-                    <span class="blue--text">@{{ boardUser.displayName }}</span>
+                    <div class="blue--text">@{{ firstName }}</div>
                   </template>
                 </div>
                 <v-divider class="mt-3"></v-divider>
                 <div class="pt-4">
                   <template v-if="boardUser.displayName">
-                    <span class="font-weight-bold display-1">{{ boardUser.displayName }}</span>
+                    <span class="font-weight-bold display-1">{{
+                      boardUser.displayName
+                    }}</span>
                   </template>
                   <template v-else>
-                    <span class="font-weight-bold display-1 letter-space-n10">{{ boardUser.email }}</span>
+                    <span class="font-weight-bold display-1 letter-space-n10">{{
+                      boardUser.email
+                    }}</span>
                   </template>
                 </div>
               </v-col>
             </v-row>
             <v-row>
               <v-spacer class="hidden-xs-only"></v-spacer>
-              <v-col cols="12" sm="9" :class="$vuetify.breakpoint.lgAndUp ? 'px-0' : null">
+              <v-col
+                cols="12"
+                sm="9"
+                :class="$vuetify.breakpoint.lgAndUp ? 'px-0' : null"
+              >
                 <span class="my-post blue--text">포스트</span>
                 <template v-if="getBoardList">
                   <v-card
                     outlined
                     :to="`/board/post/${item.id}`"
-                    v-for="(item) in getBoardList"
+                    v-for="item in getBoardList"
                     :key="item.id"
                     class="mt-5"
                   >
@@ -56,21 +69,25 @@
                     <v-card-text class="mb-n3">
                       {{ item.createdAt }} 작성
                       <template v-if="$store.state.user">
-                        <template v-if="$store.state.user.uid === boardUser.uid">
+                        <template
+                          v-if="$store.state.user.uid === boardUser.uid"
+                        >
                           <span class="float-right">
                             <v-btn
                               color="primary"
                               @click.prevent="goEdit(item.id)"
                               small
                               outlined
-                            >수정</v-btn>
+                              >수정</v-btn
+                            >
                             <v-btn
                               class="ml-2"
                               color="error"
                               @click.prevent="del(item.id)"
                               small
                               outlined
-                            >삭제</v-btn>
+                              >삭제</v-btn
+                            >
                           </span>
                         </template>
                       </template>
@@ -80,7 +97,9 @@
                 </template>
                 <template v-else>
                   <v-card flat class="mt-5">
-                    <v-card-title class="pl-0">아직 작성한 글이 없습니다.</v-card-title>
+                    <v-card-title class="pl-0"
+                      >아직 작성한 글이 없습니다.</v-card-title
+                    >
                   </v-card>
                 </template>
               </v-col>
@@ -145,8 +164,7 @@ export default {
     await this.FETCH_BOARD_USER(this.uid).then(() => {
       // console.log(this.boardUser);
       if (this.boardUser.email)
-        return (this.boardUser.firstName =
-          "@" + this.getFirstEmailName(this.boardUser.email));
+        return (this.firstName = this.getFirstEmailName(this.boardUser.email));
     });
     bus.$emit("off:progress");
   }
