@@ -18,6 +18,7 @@ const db = app.firestore()
 // });
 
 // exports.test = functions.region('asia-east2').https.onRequest(require('./test'))
+exports.admin = functions.https.onRequest(require('./admin'))
 exports.createUser = functions.auth.user().onCreate( async(user) => {
   let {
     uid,
