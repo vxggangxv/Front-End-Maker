@@ -50,6 +50,11 @@ const router = new Router({
 			path: '/sign',
 			name: 'sign',
 			component: () => import('@/views/sign.vue'),
+    },
+    {
+			path: '/admin/user',
+			name: 'user',
+			component: () => import('@/views/admin/user.vue'),
 		},
 		{
 			path: '/board',
@@ -75,7 +80,7 @@ const router = new Router({
 					component: () => import('@/views/board/edit.vue'),
 				},
 			],
-		},
+    },
 		{
 			path: '/lectures',
 			component: () => import('@/views/lectures/index.vue'),
