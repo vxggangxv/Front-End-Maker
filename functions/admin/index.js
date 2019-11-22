@@ -15,32 +15,41 @@ app.use(cors({ origin: true }))
 //   next()
 // })
 
-app.get('/users', async (req, res) => {
-  let { offset, limit, order, sort, search } = req.query
-  offset = Number(offset)
-  limit = Number(limit)
-  const r = {
-    items: [],
-    totalCount: 0
-  }
-  let s = null
-  if (search) {
-    s = await db.collection('users').where('email', '==', search).get()
-    r.totalCount = s.size
-  } else {
-    const t = await db.collection('infos').doc('users').get()
-    r.totalCount = t.data().counter
-    s = await db.collection('users').orderBy(order, sort).offset(offset).limit(limit).get()
-  }
-
+app.get('/user', async (req, res) => {
+  let r = [];
+  let s = null;
+  s = await db.collection('user').get();
   s.forEach(v => {
-    r.items.push(v.data())
+    r.push(v.data())
   })
   res.send(r)
 })
+// app.get('/user', async (req, res) => {
+//   let { offset, limit, order, sort, search } = req.query
+//   offset = Number(offset)
+//   limit = Number(limit)
+//   const r = {
+//     items: [],
+//     totalCount: 0
+//   }
+//   let s = null
+//   if (search) {
+//     s = await db.collection('user').where('email', '==', search).get()
+//     r.totalCount = s.size
+//   } else {
+//     const t = await db.collection('infos').doc('user').get()
+//     r.totalCount = t.data().counter
+//     s = await db.collection('user').orderBy(order, sort).offset(offset).limit(limit).get()
+//   }
+
+//   s.forEach(v => {
+//     r.items.push(v.data())
+//   })
+//   res.send(r)
+// })
 
 app.get('/search', async (req, res) => {
-  const s = await db.collection('users').where('email', '>=', req.query.search).limit(3).get()
+  const s = await db.collection('user').where('email', '>=', req.query.search).limit(3).get()
 
   const items = []
   s.forEach(v => {

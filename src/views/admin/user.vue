@@ -5,7 +5,16 @@
       <!-- <v-col v-for="item in boardUserList" :key="item.id" cols="12" sm="6" md="4" lg="3"> -->
       <v-col cols="12" sm="6" md="4" lg="3">
         <v-card class="post-card">
-          <v-card-title class="post-title-wrapper pt-4 pb-3"></v-card-title>
+          <v-card-title
+            class="post-title-wrapper pt-4 pb-3"
+            v-for="item in userList"
+            :key="item.uid"
+          >{{ item.email }} {{ item.level }}</v-card-title>
+          <!-- <v-card-title class="post-title-wrapper pt-4 pb-3">{{ searchEmail }}</v-card-title> -->
+          <!-- <v-card-title class="post-title-wrapper pt-4 pb-3">
+            {{ totalCount }}
+            {{ items }}
+          </v-card-title>-->
         </v-card>
       </v-col>
     </v-row>
@@ -13,6 +22,7 @@
 </template>
 
 <script>
+import { debuglog } from "util";
 // import _ from "lodash";
 // import UserCard from "@/components/userCard";
 
@@ -42,7 +52,8 @@ export default {
       emails: [],
       email: null,
       loadingSearch: false,
-      userList: []
+      userList: [],
+      searchEmail: ""
     };
   },
   watch: {
@@ -59,11 +70,30 @@ export default {
       if (n !== o) this.list();
     }
   },
+  created() {
+    this.fetchData();
+    // this.list();
+  },
   methods: {
+    async fetchData() {
+      const snapshot = await this.$axios.get(
+        "https://us-central1-front-end-maker.cloudfunctions.net/admin/user/"
+      );
+      let item = {};
+      let items = [];
+      snapshot.data.forEach(doc => {
+        item = doc;
+        item.id = doc.uid;
+        this.userList.push(item);
+      });
+
+      // this.userList.push(snapshot.data);
+      console.log(snapshot.data);
+    },
     list() {
       this.loading = true;
       this.$axios
-        .get("/admin/users", {
+        .get("/admin/user", {
           params: {
             offset:
               this.options.page > 0
