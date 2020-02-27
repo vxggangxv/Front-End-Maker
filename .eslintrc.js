@@ -28,6 +28,9 @@ module.exports = {
     // ],
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'semi': [1, 'never'],
+    'comma-dangle': [1, 'always'],
+    "quotes": [1, "single", "avoid-escape"],
     'no-unused-vars': 1,
   },
   parserOptions: {

@@ -1,111 +1,107 @@
-import Vue from "vue";
-import Router from "vue-router";
-import store from "../store/";
-import homeIndex from "../views/home/index.vue";
-import homeMain from "../views/home/main.vue";
+import Vue from 'vue';
+import Router from 'vue-router';
+import store from '../store/';
+import homeIndex from '../views/home/index.vue';
+import homeMain from '../views/home/main.vue';
 
 Vue.use(Router);
 
 const router = new Router({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
-      path: "/",
-      redirect: "/home/main"
+  routes: [{
+      path: '/',
+      redirect: '/home/main'
     },
     {
-      path: "/home",
-      redirect: "/home/main",
+      path: '/home',
+      redirect: '/home/main',
       component: homeIndex,
-      children: [
-        {
-          path: "main",
-          name: "main",
+      children: [{
+          path: 'main',
+          name: 'main',
           component: homeMain
         },
         {
-          path: "trending",
-          name: "trending",
-          component: () => import("@/views/home/trending.vue")
+          path: 'trending',
+          name: 'trending',
+          component: () => import('@/views/home/trending.vue')
         },
         {
-          path: "post",
-          name: "post",
-          component: () => import("@/views/home/post.vue")
+          path: 'post',
+          name: 'post',
+          component: () => import('@/views/home/post.vue')
         },
         {
-          path: "tag",
-          name: "tag",
-          component: () => import("@/views/home/tag.vue")
+          path: 'tag',
+          name: 'tag',
+          component: () => import('@/views/home/tag.vue')
         },
         {
-          path: "userProfile",
-          name: "userProfile",
-          component: () => import("@/views/home/userProfile.vue")
+          path: 'userProfile',
+          name: 'userProfile',
+          component: () => import('@/views/home/userProfile.vue')
         }
       ]
     },
     {
-      path: "/sign",
-      name: "sign",
-      component: () => import("@/views/sign.vue")
+      path: '/sign',
+      name: 'sign',
+      component: () => import('@/views/sign.vue')
     },
     {
-      path: "/admin/user",
-      name: "user",
-      component: () => import("@/views/admin/user.vue")
+      path: '/admin/user',
+      name: 'user',
+      component: () => import('@/views/admin/user.vue')
     },
     {
-      path: "/board",
-      component: () => import("@/views/board/index.vue"),
-      children: [
-        {
-          path: "write",
-          name: "write",
-          component: () => import("@/views/board/write.vue")
+      path: '/board',
+      component: () => import('@/views/board/index.vue'),
+      children: [{
+          path: 'write',
+          name: 'write',
+          component: () => import('@/views/board/write.vue')
         },
         {
-          path: "list/:id",
-          name: "postList",
-          component: () => import("@/views/board/postList.vue")
+          path: 'list/:id',
+          name: 'postList',
+          component: () => import('@/views/board/postList.vue')
         },
         {
-          path: "post/:id",
-          name: "postItem",
-          component: () => import("@/views/board/postItem.vue")
+          path: 'post/:id',
+          name: 'postItem',
+          component: () => import('@/views/board/postItem.vue')
         },
         {
-          path: "edit/:id",
-          component: () => import("@/views/board/edit.vue")
+          path: 'edit/:id',
+          component: () => import('@/views/board/edit.vue')
         }
       ]
     },
     {
-      path: "/lectures",
-      component: () => import("@/views/lectures/index.vue"),
-      children: [
-        {
-          path: "notes",
-          name: "notes",
-          component: () => import("@/views/lectures/notes.vue")
+      path: '/lectures',
+      component: () => import('@/views/lectures/index.vue'),
+      children: [{
+          path: 'notes',
+          name: 'notes',
+          component: () => import('@/views/lectures/notes.vue')
         },
         {
-          path: "storage",
-          name: "storage",
-          component: () => import("@/views/lectures/storage.vue")
+          path: 'storage',
+          name: 'storage',
+          component: () => import('@/views/lectures/storage.vue')
         },
         {
-          path: "axios",
-          name: "axios",
-          component: () => import("@/views/lectures/axios.vue")
+          path: 'axios',
+          name: 'axios',
+          component: () => import('@/views/lectures/axios.vue')
         }
       ]
     },
     {
-      path: "*",
-      name: "e404",
-      component: () => import("../views/e404.vue")
+      path: '*',
+      name: 'e404',
+      component: () => import('../views/e404.vue')
     }
   ]
 });
@@ -118,7 +114,7 @@ const waitFirebase = () => {
         clearInterval(tmr);
         resolve();
       } else if (cnt++ > 500)
-        reject(Error("제한 시간 초과, 인터넷 연결을 확인하세요"));
+        reject(Error('제한 시간 초과, 인터넷 연결을 확인하세요'));
     }, 10);
   });
 };

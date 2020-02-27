@@ -91,66 +91,66 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
-import { getHelper } from "../../mixins/getHelper";
-import BoardBar from "../../components/BoardBar.vue";
-import bus from "../../utils/bus.js";
+import { mapState, mapGetters, mapActions, } from 'vuex'
+import { getHelper, } from '../../mixins/getHelper'
+import BoardBar from '../../components/BoardBar.vue'
+import bus from '../../utils/bus.js'
 
 export default {
   data() {
     return {
       bid: null,
-      firstName: ""
+      firstName: '',
       // title: null,
       // content: null,
       // items: []
-    };
+    }
   },
-  mixins: [getHelper],
+  mixins: [getHelper,],
   components: {
-    BoardBar
+    BoardBar,
   },
   computed: {
-    ...mapState(["boardList", "board", "boardUser"]),
+    ...mapState(['boardList', 'board', 'boardUser',]),
     // ...mapGetters(["getBoard"]),
     title() {
-      return this.board.title;
+      return this.board.title
     },
     content() {
-      return this.board.content;
-    }
+      return this.board.content
+    },
   },
   methods: {
     ...mapActions([
-      "FETCH_USER_LIST",
-      "FETCH_BOARD",
-      "DELETE_BOARD",
-      "FETCH_BOARD_USER",
-      "FETCH_BOARD_LIST"
+      'FETCH_USER_LIST',
+      'FETCH_BOARD',
+      'DELETE_BOARD',
+      'FETCH_BOARD_USER',
+      'FETCH_BOARD_LIST',
     ]),
     del() {
-      this.DELETE_BOARD(this.bid);
-      this.$router.push("/board/list");
+      this.DELETE_BOARD(this.bid)
+      this.$router.push('/board/list')
     },
     anotherPost(id, $el) {
-      this.bid = id;
-      this.FETCH_BOARD(id);
-      window.scrollTo(0, 0);
-      if (id === this.$route.params.id) return;
-      this.$router.push(`/board/list/${id}`);
-    }
+      this.bid = id
+      this.FETCH_BOARD(id)
+      window.scrollTo(0, 0)
+      if (id === this.$route.params.id) return
+      this.$router.push(`/board/list/${id}`)
+    },
   },
   async created() {
-    bus.$emit("on:progress");
+    bus.$emit('on:progress')
 
-    this.bid = this.$route.params.id;
-    await this.FETCH_BOARD(this.bid);
+    this.bid = this.$route.params.id
+    await this.FETCH_BOARD(this.bid)
     await this.FETCH_BOARD_USER(this.board.uid).then(_ => {
       if (this.boardUser.email)
-        return (this.firstName = this.getFirstEmailName(this.boardUser.email));
-    });
+        return (this.firstName = this.getFirstEmailName(this.boardUser.email))
+    })
 
-    bus.$emit("off:progress");
+    bus.$emit('off:progress')
 
     // console.log(this.boardUser.displayName);
     // console.log(this.boardUser.email);
@@ -159,8 +159,8 @@ export default {
 
     // await this.$store.dispatch("FETCH_BOARD_LIST");
     // await this.FETCH_BOARD_LIST;
-  }
-};
+  },
+}
 </script>
 <style lang="scss" scoped>
 .my-post {
