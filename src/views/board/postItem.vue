@@ -130,7 +130,7 @@ export default {
     ]),
     del() {
       this.DELETE_BOARD(this.bid)
-      this.$router.push('/board/list')
+      this.$router.push(`/board/list/${this.board.uid}`)
     },
     anotherPost(id, $el) {
       this.bid = id

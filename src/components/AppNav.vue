@@ -50,12 +50,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, } from 'vuex'
 
 export default {
   data() {
     return {
-      inputSearchTitle: "",
+      inputSearchTitle: '',
       items: [
         // {
         //   icon: "mdi-trending-up",
@@ -63,32 +63,33 @@ export default {
         //   path: "/home/trending"
         // },
         {
-          icon: "mdi-update",
-          title: "최신 포스트",
-          path: "/"
-        }
+          icon: 'mdi-update',
+          title: '최신 포스트',
+          path: '/',
+        },
         // {
         //   icon: "mdi-tag-multiple",
         //   title: "태그",
         //   path: "/home/tag"
         // }
-      ]
-    };
+      ],
+    }
   },
   computed: {
     invalidInput() {
-      return !this.inputSearchTitle.trim();
-    }
+      return !this.inputSearchTitle.trim()
+    },
   },
   methods: {
-    ...mapActions(["FETCH_BOARD_LIST", "SEARCH_BOARD_LIST"]),
+    ...mapActions(['FETCH_BOARD_LIST', 'SEARCH_BOARD_LIST',]),
     searchList() {
-      if (this.invalidInput) return this.FETCH_BOARD_LIST();
+      if (this.invalidInput) return this.FETCH_BOARD_LIST()
       // if (this.invalidInput) return;
-      this.SEARCH_BOARD_LIST(this.inputSearchTitle);
-    }
-  }
-};
+      console.log('work')
+      this.SEARCH_BOARD_LIST(this.inputSearchTitle)
+    },
+  },
+}
 </script>
 <style lang="scss" scoped>
 .search-form-icon {
