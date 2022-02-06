@@ -1,3 +1,5 @@
 # FrontMaker blog
 
-### vue firebase
+- vue2, vuex, vuetify
+- authentication
+- firebase, firebase functions, firestore database, storage
